@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from trelloclone.board.models import Board
-from trelloclone.list.models import List
+from board.models import Board
+from list.models import List
 
 
 class Card:
@@ -11,6 +11,5 @@ class Card:
 
     list = models.ForeignKey(List, related_name='card_list', on_delete=models.CASCADE)
     board = models.ForeignKey(Board, related_name='card_board', on_delete=models.CASCADE)
-    user = models.Foreignkey(User, related_name='card_user', on_delete=models.CASCADE)
     prev = models.ForeignKey('self')
     next = models.ForeignKey('self')
