@@ -14,7 +14,7 @@ class CardSerializer(serializers.ModelSerializer):
         model = Card
         fields = (
             'prev',
-            'next',
+            'list'
             'name',
             'members',
             'description',
@@ -46,14 +46,17 @@ class CardSerializer(serializers.ModelSerializer):
         if validated_data.get('name'): card.name = validated_data.get('name')
         if validated_data.get('description'): card.description = validated_data.get('description')
         if validated_data.get('due_date'): card.due_date = validated_data.get('due_date')
-        if validated_data.get('prev'): card.prev = validated_data.get('prev')
-        if validated_data.get('next'): card.prev = validated_data.get('next')
+        if validated_data.get('list') and validated_data.get('prev'):
+            list=List.object.get(id=validated_data.get('list'))
+            card.list=list
+            prev_card = Card.objects.get() ##여기 작성하고있었습니당
         card.save()
         return
 
     #view에서 하는게 낫긴 한데, 일단 통일성을 위해..
     def delete(self, card_id):
         card = Card.objects.get(id=card_id)
+        card.delete()
 
 
 
