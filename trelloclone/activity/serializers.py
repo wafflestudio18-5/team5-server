@@ -9,6 +9,13 @@ class ActivitySerializer(serializers.ModelSerializer):
             'creator'
             'content',
             'created_at',
-            'card',
+            'added_member',
+            'card_name',
             'is_comment',
         )
+
+    def create(self, validated_data):
+        activity = super(ActivitySerializer, self).create(validated_data)
+        return activity
+
+
