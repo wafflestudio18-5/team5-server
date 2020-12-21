@@ -4,23 +4,18 @@ from django.contrib.auth.models import User
 
 class ActivitySerializer(serializers.ModelSerializer):
 
-    content = serializers.SerializerMethodField()
     class Meta:
         model = Activity
         fields = (
-            'creator'
+            'creator',
             'content',
             'created_at',
-            'card_name',
+            'card',
+            'added_member',
+            'comment_content'
         )
 
-    def get_content(self, activity): # 가장 기본.
-        card = activity.card
-        list = card.list
-        content = activity.creator + " added this card to " + list.name
-        return content
-
-    def create(self, data):
+    def create(self, activity, data):
         activity = super(ActivitySerializer, self).create(data)
         return activity
 
