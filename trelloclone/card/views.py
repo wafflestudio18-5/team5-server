@@ -1,8 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.db import transaction
-from django.utils import timezone
+
 from rest_framework import status, viewsets
 from django.contrib.auth.models import User
 from card.models import UserCard, Card

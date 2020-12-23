@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from card.models import Card, UserCard
 from list.models import List
-from user.serializers import MiniUserSerializer
+from user.serializers import UserSerializer
 from activity.models import Activity
 from activity.serializers import ActivitySerializer
 
@@ -30,7 +30,7 @@ class CardSerializer(serializers.ModelSerializer):
 
     def get_members(self, card):
         members = UserCard.objects.all().filter(card=card)
-        return MiniUserSerializer(members, many=True, context=self.context).data
+        return UserSerializer(members, many=True, context=self.context).data
 
     def get_activities(self, card):
         activities = Activity.objects.all().filter(card_id=card.id)
@@ -114,6 +114,8 @@ class CardSerializer(serializers.ModelSerializer):
     def delete(self, card_id):
         card = Card.objects.all().get(id=card_id)
         card.delete()
+
+        # 연결해주는거 다시 체
 
 class BasicCardSerializer(CardSerializer):
     class Meta:

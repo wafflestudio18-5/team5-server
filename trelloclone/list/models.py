@@ -1,11 +1,12 @@
 from django.db import models
 from board.models import Board
-from card.models import Card
+#from card.models import Card
 
 
-class List:
+class List(models.Model):
     name = models.CharField(max_length=30, db_index=True)
     board = models.ForeignKey(Board, related_name='list_board', on_delete=models.CASCADE)
-    prev = models.ForeignKey('self',related_name='next')
-    head = models.ForeignKey(Card, related_name='list_in')
-    is_head = models.Boolean_field(default=False)
+    prev = models.ForeignKey('self',related_name='next', on_delete=models.DO_NOTHING)
+    head = models.ForeignKey('card.Card', related_name='list_in',on_delete=models.CASCADE) # 어차피 head가 지워질일은 리스트 삭제할때밖에 없음.
+    #head = models.ForeignKey(Card, related_name='list_in') # 순환참조때문에 고침.
+    is_head = models.BooleanField(default=False)

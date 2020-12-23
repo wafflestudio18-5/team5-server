@@ -1,5 +1,4 @@
 from django.apps import AppConfig
 
-
-class BoardConfig(AppConfig):
-    name = 'board'
+class ListConfig(AppConfig):
+    name = 'list'
