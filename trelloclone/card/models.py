@@ -5,7 +5,7 @@ from list.models import List
 
 
 class Card:
-    name = models.CharField(max_length=30, db_index=True)
+    name = models.CharField(max_length=30, db_index=True, null=False)
     description = models.TextField(db_index=True)
     due_date = models.DateTimeField(auto_now=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

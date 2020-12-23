@@ -1,6 +1,6 @@
 from django.db import models
-from trelloclone.board.models import Board
-from trelloclone.card.models import Card
+from board.models import Board
+from card.models import Card
 
 
 class List:
