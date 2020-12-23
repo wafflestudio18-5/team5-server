@@ -23,5 +23,14 @@ class BoardSerializer(serializers.ModelSerializer):
             if prevlist:
                 returnquery|=listlistrec(prevlist)
             return returnquery
-        fullquery=listlistrec(firstlist)
-        return ListSerializer(fullquery,many=True)
+        if firstlist:
+            fullquery=listlistrec(firstlist)
+            return ListSerializer(fullquery,many=True)
+        else:
+            return []
+    def create(self,data):
+        Board = super(BoardSerializer, self).create(data)
+        headlist = List.objects.create(is_head=True)
+        Board.head = headlist
+        Board.save()
+        return Board
