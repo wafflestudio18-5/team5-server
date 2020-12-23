@@ -23,11 +23,12 @@ from trelloclone.views import ping
 urlpatterns = [
     path('', ping),
     path('admin/', admin.site.urls),
-    #path('api/v1/', include('list.urls')),
-    #path('api/v1/', include('board.urls')),
+    path('api/v1/', include('list.urls')),
+    path('api/v1/', include('board.urls')),
     path('api/v1/', include('card.urls')),
     path('api/v1/', include('activity.urls')),
     path('api/v1/', include('user.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG_TOOLBAR:

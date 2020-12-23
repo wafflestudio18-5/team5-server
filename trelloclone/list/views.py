@@ -2,9 +2,9 @@ from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from trelloclone.board.models import Board, UserBoard
-from trelloclone.list.models import List
-from trelloclone.list.serializers import ListSerializer
+from board.models import Board, UserBoard
+from list.models import List
+from list.serializers import ListSerializer
 from django.core.paginator import Paginator
 from rest_framework.decorators import action
 class ListViewSet(viewsets.GenericViewSet):

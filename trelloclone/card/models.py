@@ -5,7 +5,7 @@ from board.models import Board
 
 class Card(models.Model):
     name = models.CharField(max_length=30, db_index=True, null=False)
-    description = models.TextField(db_index=True)
+    description = models.TextField(db_index=True, null=True)
     due_date = models.DateTimeField(auto_now=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_head = models.BooleanField(default=False)
