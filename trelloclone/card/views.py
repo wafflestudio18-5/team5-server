@@ -10,7 +10,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-
 class CardViewSet(viewsets.GenericViewSet):
     queryset = Card.objects.all()
     serializer_class = SimpleCardSerializer
@@ -20,6 +19,7 @@ class CardViewSet(viewsets.GenericViewSet):
         if not request.data.get('name'):
             return Response({"error": "Enter the name."},status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(data=data)
+
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

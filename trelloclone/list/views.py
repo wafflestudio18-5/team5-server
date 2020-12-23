@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from trelloclone.board.models import Board, UserBoard
 from trelloclone.list.models import List
 from trelloclone.list.serializers import ListSerializer
+from django.core.paginator import Paginator
 from rest_framework.decorators import action
 class ListViewSet(viewsets.GenericViewSet):
     serializer_class=ListSerializer
@@ -27,6 +28,7 @@ class ListViewSet(viewsets.GenericViewSet):
             return Response(self.get_serializer(createdlist).data,status=status.HTTP_201_CREATED)
         else:
             return Response({'error':'unathorized'},status=status.HTTP_403_FORBIDDEN)
+
     def update(self,request):
         user=request.user  # board 에속한 user인지 어떻게 확인하지..?
         list_id=request.data.get('list_id')
