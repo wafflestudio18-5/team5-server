@@ -18,11 +18,21 @@ class ListSerializer(serializers.ModelSerializer):
         firstcard=headcard.prev
         def cardlistrec(card):
             prevcard=card.prev
-            returnquery=Card.objects.all().filter(id=prevcard.id)
+            returnquery=Card.objects.get(id=prevcard.id)
             if prevcard:
                 returnquery|=cardlistrec(prevcard)
             return returnquery
-        fullquery=cardlistrec(firstcard)
-        return BasicCardSerializer(fullquery,many=True)
+        if firstcard:
+            fullquery=cardlistrec(firstcard)
+            return BasicCardSerializer(fullquery,many=True)
+        else:
+            return []
+
+    def create(self,data):
+        List = super(ListSerializer, self).create(data)
+        headcard = Card.objects.create(is_head=True)
+        List.head = headcard
+        List.save()
+        return List
 
 
