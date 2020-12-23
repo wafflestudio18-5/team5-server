@@ -110,11 +110,16 @@ class CardSerializer(serializers.ModelSerializer):
         creator = card.creator
         content = creator.username + " added this card to " + card.list.name
         Activity.objects.all().create(creator=creator, content=content, card=card, is_comment=False)
+        return
 
     def delete(self, card_id):
-        card = Card.objects.all().get(id=card_id)
+        card = self.queryset.get(id='card_id')
+        prev= card.prev
+        next = self.queryset.get(prev=card)
+        next.prev = prev
+        next.save()
         card.delete()
-
+        return
         # 연결해주는거 다시 체
 
 class BasicCardSerializer(CardSerializer):

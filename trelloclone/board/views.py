@@ -2,18 +2,18 @@ from django.shortcuts import render
 from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from trelloclone.board.models import Board, UserBoard
-from trelloclone.list.models import List
-from trelloclone.board.serializers import BoardSerializer
+from board.models import Board, UserBoard
+from list.models import List
+from board.serializers import BoardSerializer
 from rest_framework.decorators import action
-from trelloclone.user.models import User
-from trelloclone.user.serializers import UserSerializer
+from django.contrib.auth.models import User
+from user.serializers import UserSerializer
 
 class BoardViewSet(viewsets.GenericViewSet):
     serializer_class=BoardSerializer
     def create(self, request):
         user=request.user
-        name=request.data.get('namd')
+        name=request.data.get('name')
         if not name:
             Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
         newboard = Board.objects.create(name=name)

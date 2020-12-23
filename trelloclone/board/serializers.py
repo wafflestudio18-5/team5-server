@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from trelloclone.list.models import List
-from trelloclone.card.models import Card
-from trelloclone.board.models import Board
-from trelloclone.list.serializers import ListSerializer
-from trelloclone.card.serializers import BasicCardSerializer
+from list.models import List
+from card.models import Card
+from board.models import Board
+from list.serializers import ListSerializer
+from card.serializers import BasicCardSerializer
 
 class BoardSerializer(serializers.ModelSerializer):
     lists=serializers.SerializerMethodField()
