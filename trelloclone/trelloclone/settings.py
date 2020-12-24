@@ -30,28 +30,35 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
-AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
+#
+#form version
+# AUTHENTICATION_BACKENDS = [
+#     # Needed to login by username in Django admin, regardless of `allauth`
+#     'django.contrib.auth.backends.ModelBackend',
+#     # `allauth` specific authentication methods, such as login by e-mail
+#     'allauth.account.auth_backends.AuthenticationBackend',
+# ]
 
-SITE_ID = 1
-
+# SITE_ID = 1
+# LOGIN_REDIRECT_URL = '/'
 # Provider specific settings
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '123',
-            'secret': '456',
-            'key': ''
-        }
-    }
-}
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         "APP": {
+#             "client_id": "680668598977-e5cdgg0j7d3bsi87h3g36asul6dkq3vt.apps.googleusercontent.com",
+#             "secret": "6zUjY0V79Tzr-3B7NSPsUdGZ",
+#             "key": ""
+#         },
+#         'SCOPE': [
+#             'profile',
+#             'email',
+#         ],
+#
+#         'AUTH_PARAMS': {
+#             'access_type': 'online',  # https://django-allauth.readthedocs.io/en/latest/providers.html#google
+#         }
+#     }
+# }
 
 # Application definition
 
@@ -64,24 +71,30 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'board.apps.BoardConfig',
-    'list.apps.ListConfig',
-    'card.apps.CardConfig',
-    'activity.apps.ActivityConfig',
+    'rest_auth', # v2
+    'rest_auth.registration', #v2
+    # 'board.apps.BoardConfig',
+    # 'list.apps.ListConfig',
+    # 'card.apps.CardConfig',
+    # 'activity.apps.ActivityConfig',
 
     #####################################################
     #########social login################################
-    # The following apps are required:
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    # ... include the providers you want to enable:
-    'allauth.socialaccount.providers.apple',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.microsoft',
+    # # The following apps are required:
+    # 'login',
+     'django.contrib.sites', #v2
+     'allauth', #v2
+     'allauth.account', #v2
+     'allauth.socialaccount', #v2
+    # # ... include the providers you want to enable:
+    # # 'allauth.socialaccount.providers.apple',
+    # # 'allauth.socialaccount.providers.facebook',
+     'allauth.socialaccount.providers.google', #v2
+    # # 'allauth.socialaccount.providers.microsoft',
 ]
+
+SITE_ID = 1 #v2
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -118,7 +131,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
+               # 'django.template.context_processors.request',
             ],
         },
     },
