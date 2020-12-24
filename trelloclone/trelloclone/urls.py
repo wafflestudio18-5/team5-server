@@ -17,18 +17,25 @@ from django.conf import settings
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path
-
 from trelloclone.views import ping
+from social.views import GoogleLogin
+
+from django.urls import path
 
 urlpatterns = [
     path('', ping),
     path('admin/', admin.site.urls),
-    path('api/v1/', include('list.urls')),
-    path('api/v1/', include('board.urls')),
-    path('api/v1/', include('card.urls')),
-    path('api/v1/', include('activity.urls')),
+    # path('api/v1/', include('list.urls')),
+    # path('api/v1/', include('board.urls')),
+    # path('api/v1/', include('card.urls')),
+    # path('api/v1/', include('activity.urls')),
     path('api/v1/', include('user.urls')),
-    path('accounts/', include('allauth.urls')),
+    #path('accounts/', include('allauth.urls')),
+    #path('api/v1/user/social', TemplateView.as_view(template_name="login/index.html"))
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^rest-auth/google/$', GoogleLogin.as_view(), name='google_login')
 ]
 
 if settings.DEBUG_TOOLBAR:
