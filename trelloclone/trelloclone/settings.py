@@ -145,7 +145,7 @@ WSGI_APPLICATION = 'trelloclone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'localhost',
+        'HOST': '127.0.0.1',
         'PORT': 3306,
         'NAME': 'toy_project',
         'USER': 'toy_project',
