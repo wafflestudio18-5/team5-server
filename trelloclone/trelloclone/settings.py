@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'card.apps.CardConfig',
     'activity.apps.ActivityConfig',
     'user.apps.UserProfileConfig',
+
 ]
 
 REST_FRAMEWORK = {

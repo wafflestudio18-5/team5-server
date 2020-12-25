@@ -19,18 +19,12 @@ class BoardSerializer(serializers.ModelSerializer):
         firstlist=headlist.prev
         def listlistrec(listobj):
             prevlist=listobj.prev
-            returnquery=List.objects.all().filter(id=prevlist.id)
+            returnquery=List.objects.filter(id=listobj.id).all()
             if prevlist:
                 returnquery|=listlistrec(prevlist)
             return returnquery
         if firstlist:
             fullquery=listlistrec(firstlist)
-            return ListSerializer(fullquery,many=True)
+            return ListSerializer(fullquery,many=True).data
         else:
             return []
-    def create(self,data):
-        Board = super(BoardSerializer, self).create(data)
-        headlist = List.objects.create(is_head=True)
-        Board.head = headlist
-        Board.save()
-        return Board

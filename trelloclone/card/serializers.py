@@ -10,18 +10,15 @@ class CardSerializer(serializers.ModelSerializer):
     queryset = Card.objects.all()
     activities = serializers.SerializerMethodField()
     members = serializers.SerializerMethodField()
-    prev = serializers.SerializerMethodField()
     class Meta:
         model = Card
         fields = (
-            'prev',
-            'list',
+            'id',
             'name',
-            'members',
             'description',
             'due_date',
+            'members',
             'activities',
-            'created_at'
         )
 
     def get_prev(self, card):
