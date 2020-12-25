@@ -1,20 +1,32 @@
 from django.contrib.auth.models import User
+from user.models import UserProfile
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from rest_framework.authtoken.models import Token
 
 
 class SocialSerializer(serializers.Serializer):
-
     provider = serializers.CharField(max_length=255, required=True)
     access_token = serializers.CharField(max_length=4096, required=True, trim_whitespace=True)
+
+class UserProfile(serializers.ModelSerializer):
+    user = serializers.ModelSerializer()
+    class Meta:
+        model = UserProfile
+        fields = (
+            'user',
+            'access_type',
+        )
+    def get_user(self):
+        user = self.data.user
+        print(user)
+        return UserSerializer(user, context= self.context).data
 
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
     email = serializers.EmailField(allow_blank=False)
-    # access_type = serializers.ChoiceField(required=True, choices=['OAUTH', 'PASSWORD'])
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
 
@@ -27,8 +39,6 @@ class UserSerializer(serializers.ModelSerializer):
             'email',
             'first_name',
             'last_name',
-            # 'access_type',
-
         )
 
     def create(self, validated_data):

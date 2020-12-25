@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from user.models import UserProfile
 from rest_framework import status, viewsets
 from rest_framework.authtoken.models import Token
 from django.db import IntegrityError
@@ -28,6 +29,9 @@ class UserViewSet(viewsets.GenericViewSet):
         login(request, user)
         data = serializer.data
         data['token'] = user.auth_token.key
+        type = request.data.get('access_type')
+        UserProfile.objects.create(user=user, access_type=type)
+
         return Response(data, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['PUT'])
