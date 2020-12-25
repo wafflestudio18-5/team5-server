@@ -6,17 +6,21 @@ from board.models import Board, UserBoard
 from list.models import List
 from board.serializers import BoardSerializer
 from rest_framework.decorators import action
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from user.serializers import UserSerializer
 
 class BoardViewSet(viewsets.GenericViewSet):
     serializer_class=BoardSerializer
     def create(self, request):
         user=request.user
+        
+        if not user.is_authenticated:
+            return Response({'error':'not logged in'},status=status.HTTP_403_FORBIDDEN)
         name=request.data.get('name')
         if not name:
-            Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
-        newboard = Board.objects.create(name=name)
+            return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
+        headlist = List.objects.create(is_head=True)
+        newboard = Board.objects.create(name=name,head=headlist)
         UserBoard.objects.create(user=user,board=newboard)
         return Response(self.get_serializer(newboard).data,status=status.HTTP_201_CREATED)
 
@@ -27,8 +31,11 @@ class BoardViewSet(viewsets.GenericViewSet):
         return Response(self.get_serializer(boardlist,many=True).data,status=status.HTTP_200_OK)
 
     def get(self,request):
-        board_id = request.data.get("id")
-        board_key = request.data.get("key")
+        board_id = request.data.get('id')
+        board_key = request.data.get('key')
+        
+        print(board_id)
+        print(board_key)
         if board_id and board_key:
             Response({'error':'too many arguments'},status=status.HTTP_400_BAD_REQUEST)
         elif board_id:

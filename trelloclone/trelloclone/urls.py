@@ -24,10 +24,10 @@ from django.urls import path
 urlpatterns = [
     path('', ping),
     path('admin/', admin.site.urls),
-    # path('api/v1/', include('list.urls')),
-    # path('api/v1/', include('board.urls')),
-    # path('api/v1/', include('card.urls')),
-    # path('api/v1/', include('activity.urls')),
+    path('api/v1/', include('list.urls')),
+    path('api/v1/', include('board.urls')),
+    path('api/v1/', include('card.urls')),
+    path('api/v1/', include('activity.urls')),
     path('api/v1/', include('user.urls')),
 #    path('api/v1/social', include('social.urls'))
 ]
