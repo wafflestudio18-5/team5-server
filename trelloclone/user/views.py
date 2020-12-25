@@ -8,6 +8,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from user.serializers import UserSerializer
+from social.views import GoogleLogin
+from django.shortcuts import redirect
 
 class UserViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()

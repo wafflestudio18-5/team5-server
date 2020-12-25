@@ -2,7 +2,9 @@
 
 # tsv file
 __pycache__
-
+__pycache__/
+/__pycache__
+*.py[cod]
 # compiled output
 /dist
 /tmp

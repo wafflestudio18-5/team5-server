@@ -44,6 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)
         Token.objects.create(user=user)
+
         return user
 
     def validate_password(self, value):

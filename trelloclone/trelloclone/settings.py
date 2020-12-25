@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'card.apps.CardConfig',
     'activity.apps.ActivityConfig',
     'user.apps.UserProfileConfig',
+    'social.apps.SocialConfig',
 ]
 
 REST_FRAMEWORK = {
@@ -156,7 +157,11 @@ INSTALLED_APPS += [
 
 SITE_ID = 1
 
-
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'scope': ('user:profile', 'user:email')
+    }
+}
 
 
 
