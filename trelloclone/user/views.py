@@ -40,6 +40,7 @@ class UserViewSet(viewsets.GenericViewSet):
             data = self.get_serializer(user).data
             token, created = Token.objects.get_or_create(user=user)
             data['token'] = token.key
+            print(user.is_authenticated)
             return Response(data)
 
         return Response({"error": "Wrong username or wrong password"}, status=status.HTTP_403_FORBIDDEN)

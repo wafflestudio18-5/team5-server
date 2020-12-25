@@ -73,10 +73,11 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_auth', # v2
     'rest_auth.registration', #v2
-    # 'board.apps.BoardConfig',
-    # 'list.apps.ListConfig',
-    # 'card.apps.CardConfig',
-    # 'activity.apps.ActivityConfig',
+    'board.apps.BoardConfig',
+    'list.apps.ListConfig',
+    'card.apps.CardConfig',
+    'activity.apps.ActivityConfig',
+    'user.apps.UserConfig',
 
     #####################################################
     #########social login################################

@@ -9,19 +9,25 @@ from card.serializers import CardSerializer, BasicCardSerializer, SimpleCardSeri
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from list.models import List
 
 class CardViewSet(viewsets.GenericViewSet):
     queryset = Card.objects.all()
     serializer_class = SimpleCardSerializer
 
     def create(self, request):
+        user=request.user
         data = request.data
-        if not request.data.get('name'):
-            return Response({"error": "Enter the name."},status=status.HTTP_400_BAD_REQUEST)
-        serializer = self.get_serializer(data=data)
+        name=request.data.get('name')
+        list_id=request.data.get('list_id')
+        if not name or not list_id:
+            return Response({"error": "missing request data."},status=status.HTTP_400_BAD_REQUEST)
+        listobj=List.objects.get(id=list_id)
+        if not listobj:
+            return Response({"error": "list not found"},status=status.HTTP_400_BAD_REQUEST)
 
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        createdcard=Card.objects.create(name=name,list=listobj)
+        return Response(self.get_serializer(createdcard).data, status=status.HTTP_201_CREATED)
 
     ##############################################################
 
@@ -36,15 +42,21 @@ class CardViewSet(viewsets.GenericViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def retrieve(self, request, pk=None):
-        id = request.get('card_id')
-        card_obj = self.queryset.get(id=id)
-        return Response(self.get_serializer(card_obj).data)
+    def get(self,request):
+        card_id=request.data.get('id')
+        if not card_id:
+            return Response({"error": "missing request data."},status=status.HTTP_400_BAD_REQUEST)
+        cardobj=Card.objects.get(id=card_id)
+        if not cardobj:
+            return Response({"error": "card not found"},status=status.HTTP_404_NOT_FOUND)
+        return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
     def delete(self, request):
         id = request.get('card_id')
         self.serializer_class.delete(self, id)
         return Response(status=status.HTTP_200_OK)
+    
+
 
 
 

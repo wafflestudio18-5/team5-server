@@ -7,19 +7,21 @@ from list.models import List
 from list.serializers import ListSerializer
 from django.core.paginator import Paginator
 from rest_framework.decorators import action
+from card.models import Card
 class ListViewSet(viewsets.GenericViewSet):
     serializer_class=ListSerializer
     def create(self,request):
         user=request.user
         board_id=request.data.get('board_id')
         name=request.data.get('name')
-        if not board_id or name:
+        if not board_id or not name:
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
-        board=Board.objects.filter(id=board_id)
+        board=Board.objects.get(id=board_id)
         headlist=board.head
         userboard=UserBoard.objects.filter(user=user,board=board)
         if userboard:
-            createdlist=List.objects.create(name=name)
+            headcard = Card.objects.create(is_head=True)
+            createdlist=List.objects.create(name=name,head=headcard)
             befprev=headlist.prev
             headlist.prev=createdlist
             createdlist.prev=befprev
@@ -72,7 +74,14 @@ class ListViewSet(viewsets.GenericViewSet):
         todelete.delete()
         return Response(status=status.HTTP_200_OK)
 
-
+    def get(self,request):
+        list_id = request.data.get('id')
+        if not list_id:
+            return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
+        listobj=List.objects.get(id=list_id)
+        if not listobj:
+            Response({'error':'List does not exist'},status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(listobj).data,status=status.HTTP_200_OK)
 
 
 # Create your views here.
