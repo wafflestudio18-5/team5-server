@@ -9,18 +9,20 @@ class SocialSerializer(serializers.Serializer):
     provider = serializers.CharField(max_length=255, required=True)
     access_token = serializers.CharField(max_length=4096, required=True, trim_whitespace=True)
 
+
 class UserProfile(serializers.ModelSerializer):
     user = serializers.ModelSerializer()
+
     class Meta:
         model = UserProfile
         fields = (
             'user',
             'access_type',
         )
+
     def get_user(self):
         user = self.data.user
-        print(user)
-        return UserSerializer(user, context= self.context).data
+        return UserSerializer(user, context=self.context).data
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -50,15 +52,45 @@ class UserSerializer(serializers.ModelSerializer):
         return make_password(value)
 
     def validate(self, data):
-        if (bool(data.get('username')) == False) or (data.get('username') == ""):
-            raise serializers.ValidationError("Enter the username")
-        if (bool(data.get('email')) == False) or (data.get('email') == ""):
-            raise serializers.ValidationError("Enter the email")
-        else:
-            if data.get('email').find('@') == -1:
-                raise serializers.ValidationError("Invalid email form")
+
+        # 생성하는거면 email과 username 중복을 모두 확인하고, 업데이트하는거면 username중복만 체크한다.
+
+        create = False
+        if data.get('email')!=None: create=True
+
+        if create:
+            if (bool(data.get('username')) == False) or (data.get('username') == ""):
+                raise serializers.ValidationError("Enter the username")
+            if (bool(data.get('email')) == False) or (data.get('email') == ""):
+                raise serializers.ValidationError("Enter the email")
+            else:
+                if data.get('email').find('@') == -1:
+                    raise serializers.ValidationError("Invalid email form")
+            email_error = False
+            try:
+                email_duplicate = User.objects.get(email=data.get('email'))
+                if email_duplicate:
+                    email_error = True
+            except:
+                pass
+            if email_error:
+                error_msg = "Given email is already in use. Use another email or another social account unless you have already signed up."
+                raise serializers.ValidationError(error_msg)
+
+        name_error = False
+        try:
+            name_duplicate = User.objects.get(username=data.get('username'))
+            if name_duplicate:
+                name_error = True
+        except:
+            pass
+
+        if name_error:
+            error_msg = "Given username is already in use. Use another username."
+            raise serializers.ValidationError(error_msg)
 
         return data
+
 
     def update(self, user, data):
         if data.get('username'):
@@ -66,22 +98,3 @@ class UserSerializer(serializers.ModelSerializer):
             user.username = username
             user.save()
         return
-
-# class MiniUserSerializer(serializers.ModelSerializer) : # user/userlist  ,  board/userlist/  ,  card/ 등에 사용.
-#
-#     username = serializers.CharField(required=True)
-#     email = serializers.EmailField(allow_blank=False)
-#     access_type = serializers.ChoiceField(required=True, choices=['OAUTH', 'PASSWORD'])
-#     first_name = serializers.CharField(required=False)
-#     last_name = serializers.CharField(required=False)
-#
-#     class Meta:
-#         model = User
-#         fields = (
-#             'id',
-#             'username',
-#             'password',
-#             'email',
-#             'first_name',
-#             'last_name'
-#         )
