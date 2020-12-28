@@ -8,12 +8,12 @@ from board.serializers import BoardSerializer
 from rest_framework.decorators import action
 # from django.contrib.auth.models import User
 from user.serializers import UserSerializer
+from django.contrib.auth.models import User
 
 class BoardViewSet(viewsets.GenericViewSet):
     serializer_class=BoardSerializer
     def create(self, request):
         user=request.user
-        
         if not user.is_authenticated:
             return Response({'error':'not logged in'},status=status.HTTP_403_FORBIDDEN)
         name=request.data.get('name')
@@ -34,8 +34,6 @@ class BoardViewSet(viewsets.GenericViewSet):
         board_id = request.data.get('id')
         board_key = request.data.get('key')
         
-        print(board_id)
-        print(board_key)
         if board_id and board_key:
             Response({'error':'too many arguments'},status=status.HTTP_400_BAD_REQUEST)
         elif board_id:
@@ -46,6 +44,7 @@ class BoardViewSet(viewsets.GenericViewSet):
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
         if not board:
             Response({'error':'Board does not exist'},status=status.HTTP_400_BAD_REQUEST)
+            
         return Response(self.get_serializer(board).data,status=status.HTTP_200_OK)
     
     def delete(self,request):
@@ -58,6 +57,7 @@ class BoardViewSet(viewsets.GenericViewSet):
         board.delete()
         return Response(status=status.HTTP_200_OK)
     
+    @action(detail=False, methods=['POST'])
     def invite(self,request):
         board_id = request.data.get('id')
         username = request.data.get('username')
@@ -76,33 +76,43 @@ class BoardViewSet(viewsets.GenericViewSet):
         UserBoard.objects.create(user=usertoinvite,board=board)
         return Response(UserSerializer(usertoinvite).data,status=status.HTTP_200_OK)
     
+    @action(detail=False, methods=['GET'])
     def userlist(self,request):
         user=request.user
         board_id = request.data.get('id')
+        if not user.is_authenticated:
+            return Response({'error':'not logged in'},status=status.HTTP_403_FORBIDDEN)
         if not board_id:
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
         board = Board.objects.get(id=board_id)
         if not board:
             Response({'error':'Board does not exist'},status=status.HTTP_400_BAD_REQUEST)
-        UBlist = UserBoard.objects.filter(user=user).all()
-        userlist=User.objects.filter(User_board__in=UBlist).all()
+        UBlist = UserBoard.objects.filter(board=board).all()
+        userlist=User.objects.filter(user_board__in=UBlist).all()
         return Response(UserSerializer(userlist,many=True).data,status=status.HTTP_200_OK)
     
-    def update(self,request):
+    def put(self,request):
         user=request.user
         board_id = request.data.get('id')
         if not board_id:
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
-        board = Board.objects.get(id=board_id)
-        if not board:
-            Response({'error':'Board does not exist'},status=status.HTTP_400_BAD_REQUEST)
+        try:
+            board = Board.objects.get(id=board_id)
+        except Board.DoesNotExist:
+            Response({'error':'Board does not exist'},status=status.HTTP_404_NOT_FOUND)
         
+        try:
+            ub=UserBoard.objects.get(board=board,user=user)
+        except UserBoard.DoesNotExist:
+            Response({'error':'You have no access to this board'},status=status.HTTP_403_FORBIDDEN)
+
         name = request.data.get('name')
         if name:
             board.name=name
         star = request.data.get('star')
         if star:
-            board.star=star
+            ub.star=star
+            ub.save()
         board.save()
         return Response(BoardSerializer(board).data,status=status.HTTP_200_OK)
     

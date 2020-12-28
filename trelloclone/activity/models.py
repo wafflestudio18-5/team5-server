@@ -7,4 +7,4 @@ class Activity(models.Model):
     content = models.CharField(max_length=200, db_index=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     card = models.ForeignKey('card.Card', related_name='activity_card', on_delete=models.CASCADE)
-    comment_content = models.CharField(max_length=200, null=True)
+    is_comment = models.BooleanField(default=False)
