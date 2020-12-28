@@ -18,7 +18,6 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include, path
 from trelloclone.views import ping
-from social.views import GoogleLogin
 from django.urls import path
 
 urlpatterns = [
@@ -29,7 +28,6 @@ urlpatterns = [
     path('api/v1/', include('card.urls')),
     path('api/v1/', include('activity.urls')),
     path('api/v1/', include('user.urls')),
-#    path('api/v1/social', include('social.urls'))
 ]
 if settings.DEBUG_TOOLBAR:
     import debug_toolbar
@@ -37,9 +35,3 @@ if settings.DEBUG_TOOLBAR:
     urlpatterns += [
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ]
-
-# social login#
-urlpatterns += [
-    path('api/v1/user/social/', include('rest_auth.urls')),
-    path('api/v1/user/social/google/', GoogleLogin.as_view())
-]

@@ -30,7 +30,6 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -138,61 +137,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
-##################################################################################################
-######################################## SOCIAL LOGIN ############################################
-##################################################################################################
-
-###Oauth 버전 -> 이걸로 사용하게 될듯.###
-INSTALLED_APPS += [
-    'rest_auth',
-    'rest_auth.registration',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-]
-
-SITE_ID = 1
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'scope': ('user:profile', 'user:email')
-    }
-}
-
-
-
-
-
-
-
-###allauth 관련. Oauth에는 필요없을듯.###
-# AUTHENTICATION_BACKENDS = [
-#     # Needed to login by username in Django admin, regardless of `allauth`
-#     'django.contrib.auth.backends.ModelBackend',
-#     # `allauth` specific authentication methods, such as login by e-mail
-#     'allauth.account.auth_backends.AuthenticationBackend',
-# ]
-
-# SITE_ID = 1
-# LOGIN_REDIRECT_URL = '/'
-# Provider specific settings
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         "APP": {
-#             "client_id": "680668598977-e5cdgg0j7d3bsi87h3g36asul6dkq3vt.apps.googleusercontent.com",
-#             "secret": "6zUjY0V79Tzr-3B7NSPsUdGZ",
-#             "key": ""
-#         },
-#         'SCOPE': [
-#             'profile',
-#             'email',
-#         ],
-#
-#         'AUTH_PARAMS': {
-#             'access_type': 'online',  # https://django-allauth.readthedocs.io/en/latest/providers.html#google
-#         }
-#     }
-# }
