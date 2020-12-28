@@ -12,29 +12,42 @@ class ActivityViewSet(viewsets.GenericViewSet):
     serializer_class = ActivitySerializer
 
     def create(self, request):
-        data = request.data
-        serializer = self.get_serializer(data=data)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        user=request.user
+        card_id=request.data.get('card_id')
+        content=request.data.get('content')
+        if not card_id or not content:
+            return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
+        try:
+            cardobj=Card.objects.get(card_id)
+        except Card.DoesNotExist:
+            return Response({'error':'card not found'},status=status.HTTP_404_NOT_FOUND)
+        
+        newact=Activity.objects.create(creator=user,content=content,card=cardobj,is_comment=True)
+        return Response(ActivitySerializer(newact).data, status=status.HTTP_201_CREATED)
 
     ##############################################################
 
-    def update(self, request, pk=None):
-        card = self.get_object()
-        # Q. 만약 다른 보드의 유저가 교체를 희망하는 경우도 넣어야 하나? 그게 사이트 입장에서 가능한가?
-        # creator = request.user
-        # if card.creator!=creator:
-        #    return Response({"error": ""})
-        data = request.data
-        serializer = self.get_serializer(card, data=data, partial=True)
-        serializer.save()
-        return Response(serializer.data)
+    def put(self, request):
+        user=request.user
+        activity_id=request.data.get('id')
+        content=request.data.get('content')
+        if not content or not activity_id:
+            return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
+        try:
+            actobj=Activity.objects.get(id=activity_id)
+        except Activity.DoesNotExist:
+            return Response({'error':'activity not found'},status=status.HTTP_404_NOT_FOUND)
+        if not actobj.is_comment:
+            return Response({'error':'this activity is not a comment'},status=status.HTTP_403_FORBIDDEN)
+        if actobj.creator is not user:
+            return Response({'error':'This is not your comment'},status=status.HTTP_403_FORBIDDEN)
+        actobj.content=content
+        actobj.save()
+        return Response(ActivitySerializer(actobj).data,status=status.HTTP_200_OK)
 
-    def list(self, request):
-        return Response(self.get_serializer(self.get_queryset(), many=True).data)
 
     def delete(self, request):
-        id = request.get('activity_id')
+        id = request.get('id')
         try: activity = self.queryset.get(id=id)
         except: return Response({"error": "invalid activity id"}, status=status.HTTP_400_BAD_REQUEST)
         activity.delete()
