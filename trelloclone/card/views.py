@@ -86,7 +86,7 @@ class CardViewSet(viewsets.GenericViewSet):
             cardobj.name=name
         if description:
             cardobj.description=description
-
+        beflist=cardobj.list
         if list_id:
             try:
                 listobj=List.objects.get(id=list_id)
@@ -105,9 +105,9 @@ class CardViewSet(viewsets.GenericViewSet):
                     cardobj.prev=None
                     carobj.save()
                     fnext.save()
-
                     endcard.prev=cardobj
                     endcard.save()
+
             else:
                 if cardboj.prev is None or prev_id is not cardobj.prev.id:
                     try:
@@ -125,7 +125,11 @@ class CardViewSet(viewsets.GenericViewSet):
                     tprevnext.save()
                     cardbobj.prev=tprev
                     cardobj.save()
-
+                    
+            if list_id is not beflist:
+                cardobj.list = listobj
+                ctt="moved this card from "+beflist.name+" to "+listobj.name
+                mact=Activity.objects.create(creator=user,card=createdcard,content=ctt)
         cardobj.save()
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
