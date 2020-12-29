@@ -18,7 +18,7 @@ class BoardSerializer(serializers.ModelSerializer):
         listquery=List.objects.filter(board=boardobj).all()
         headlist=boardobj.head
         firstlist=headlist.prev
-        def listlistrec(listobj):
+        def listlistrec(listobj):   
             prevlist=listobj.prev
             returnquery=listquery.filter(id=listobj.id).all()
             if prevlist:
@@ -29,4 +29,21 @@ class BoardSerializer(serializers.ModelSerializer):
             return ListSerializer(fullquery,many=True).data
         else:
             return []
+class UserBoardSerializer(BoardSerializer):
+    id=serializers.SerializerMethodField()
+    name=serializers.SerializerMethodField()
+    class Meta:
+        model=Board
+        fields=(
+            'id',
+            'name',
+            'star',
+        )
+    def get_id(self,UBobj):
+        boardobj=UBobj.board
+        return boardobj.id
+    def get_name(self,UBobj):
+        boardobj=UBobj.board
+        return boardobj.name
+
     

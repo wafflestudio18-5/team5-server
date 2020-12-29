@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from board.models import Board, UserBoard
 from list.models import List
-from board.serializers import BoardSerializer
+from board.serializers import BoardSerializer,UserBoardSerializer
 from rest_framework.decorators import action
 # from django.contrib.auth.models import User
 from user.serializers import UserSerializer
@@ -27,11 +27,9 @@ class BoardViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['GET'])
     def boardlist(self,request):
         user = request.user
-        userboardlist = UserBoard.objects.filter(user=user).all()
-        boardlist = []
-        for userboard in userboardlist:
-            boardlist.append(userboard.board)
-        return Response(self.get_serializer(boardlist,many=True).data,status=status.HTTP_200_OK)
+        boardlist = UserBoard.objects.filter(user=user).all()
+        return Response(UserBoardSerializer(boardlist,many=True).data,status=status.HTTP_200_OK)
+
 
     def get(self,request):
         board_id = request.data.get('id')
