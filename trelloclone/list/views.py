@@ -47,7 +47,7 @@ class ListViewSet(viewsets.GenericViewSet):
             return Response({'error':'cannot change head list'},status=status.HTTP_400_BAD_REQUEST)
             
         if board_id:
-            if(listtochange.board.id is not board_id):
+            if(listtochange.board.id != int(board_id)):
                 return Response({'error':'list does not belong to that board'},status=status.HTTP_400_BAD_REQUEST)
             boardto=Board.objects.get(id=board_id)
             if not boardto:
@@ -84,8 +84,6 @@ class ListViewSet(viewsets.GenericViewSet):
                     tprevnext.save()
                     listtochange.prev=tprev
                     listtochange.save()
-
-                    
 
         if name:
             listtochange.name=name

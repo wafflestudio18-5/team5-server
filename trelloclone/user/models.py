@@ -7,4 +7,4 @@ class UserProfile(models.Model):
         ('OAUTH', 'PASSWORD'),
     )
     user = models.ForeignKey(User, related_name="user_profile", unique=True, on_delete=models.CASCADE)
-    access_type = models.CharField(max_length=20, choices=type, db_index=True)
+    grantType = models.CharField(max_length=20, choices=type, db_index=True)

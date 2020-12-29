@@ -1,12 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils import dateformat, timezone
 
 class Card(models.Model):
     name = models.CharField(max_length=30, db_index=True, null=False)
     description = models.TextField(db_index=True, null=True)
-    due_date = models.DateTimeField(auto_now=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField(auto_now=False, blank=True)
+    date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
+    created_at = models.DateTimeField(default=date, blank=True)
     is_head = models.BooleanField(default=False)
 
     creator = models.ForeignKey(User, related_name='card_creator', on_delete=models.DO_NOTHING,null=True)

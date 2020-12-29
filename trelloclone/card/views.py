@@ -29,7 +29,7 @@ class CardViewSet(viewsets.GenericViewSet):
         if not listobj:
             return Response({"error": "list not found"},status=status.HTTP_400_BAD_REQUEST)
         boardobj=listobj.board
-        ub=UserBoard.objects.get(user=use,board=boardobj)
+        ub=UserBoard.objects.get(user=user,board=boardobj)
         if not ub:
             return Response({"error": "Not authorized to create in this board"},status=status.HTTP_403_FORBIDDEN)
 
@@ -39,7 +39,7 @@ class CardViewSet(viewsets.GenericViewSet):
         headcard.prev=createdcard
         createdcard.prev=befprev
         headcard.save()
-        contentdt="added this card to"+listobj.name
+        contentdt=user.username+" added this card to "+listobj.name
         cact=Activity.objects.create(creator=user,card=createdcard,content=contentdt)
         createdcard.save()
         
@@ -54,7 +54,7 @@ class CardViewSet(viewsets.GenericViewSet):
         name=request.data.get('name')
         description=request.data.get('description')
         due_date=request.data.get('due_date')
-        prev_id==request.data.get('prev_id')
+        prev_id=request.data.get('prev_id')
         list_id=request.data.get('list_id')
 
         if not card_id:
@@ -62,23 +62,31 @@ class CardViewSet(viewsets.GenericViewSet):
         try:
             cardobj=Card.objects.get(id=card_id)
         except Card.DoesNotExist:
-            return Response({"error": "card not found"},status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "card not found"},status=status.HTTP_400_BAD_REQUEST)
         
         if cardobj.is_head:
             return Response({'error':'cannot change head card'},status=status.HTTP_400_BAD_REQUEST)
 
         if member:
             try:
-                toinvite=User.objects.get(username=memeber)
+                toinvite=User.objects.get(username=member)
             except User.DoesNotExist:
                 return Response({"error": "User not found"},status=status.HTTP_404_NOT_FOUND)
-            
-            addcontent= "added "+toinvite.name+" to this card"
+
+            dup_error=False
+            try:
+                dup = UserCard.objects.get(card=cardobj, user=toinvite)
+                if dup: dup_error=True
+            except:
+                pass
+            if dup_error:
+                return Response({"error": "That user is already the member of this card"}, status=status.HTTP_400_BAD_REQUEST)
+
+            addcontent= user.username + " added "+toinvite.username+" to this card"
             if toinvite is user:
                 addcontent= "joined this card"
             addact=Activity.objects.create(creator=user,card=cardobj,content=addcontent)
-            uc=UserCard.objects.create(user=user,card=cardobj)
-
+            uc=UserCard.objects.create(user=toinvite,card=cardobj)
 
         if due_date:
             cardobj.due_date=due_date
@@ -103,27 +111,27 @@ class CardViewSet(viewsets.GenericViewSet):
                     fnext=cardobj.next
                     fnext.prev=fprev
                     cardobj.prev=None
-                    carobj.save()
+                    cardobj.save()
                     fnext.save()
 
                     endcard.prev=cardobj
                     endcard.save()
             else:
-                if cardboj.prev is None or prev_id is not cardobj.prev.id:
+                if cardobj.prev is None or prev_id is not cardobj.prev.id:
                     try:
                         tprev=Card.objects.get(id=prev_id,list=listobj)
                     except Card.DoesNotExist:
                         return Response({'error':'prev list not found'},status=status.HTTP_404_NOT_FOUND)
                     fprev=cardobj.prev
-                    fnext=cardboj.next
+                    fnext=cardobj.next
                     tprevnext=tprev.next
                     fnext.prev=fprev
-                    cardboj.prev=None
+                    cardobj.prev=None
                     cardobj.save()
                     fnext.save()
-                    tprevnext.prev=cardboj
+                    tprevnext.prev=cardobj
                     tprevnext.save()
-                    cardbobj.prev=tprev
+                    cardobj.prev=tprev
                     cardobj.save()
 
         cardobj.save()
@@ -156,7 +164,7 @@ class CardViewSet(viewsets.GenericViewSet):
 
         prevcard=cardobj.prev
         nextcard=cardobj.next
-        nextcard.prev=prevlist
+        nextcard.prev=prevcard
         cardobj.delete()
         nextcard.save()
         return Response(status=status.HTTP_200_OK)

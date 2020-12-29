@@ -22,7 +22,10 @@ class CardSerializer(serializers.ModelSerializer):
         )
 
     def get_members(self, card):
-        members = UserCard.objects.all().filter(card=card)
+        usercard_members = UserCard.objects.all().filter(card=card)
+        members = []
+        for usercard in usercard_members:
+            members.append(usercard.user)
         return UserSerializer(members, many=True, context=self.context).data
 
     def get_activities(self, card):
