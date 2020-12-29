@@ -14,7 +14,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             'content',
         )
     def get_creator(self,activityobj):
-        return UserSerializer(activityobj.creator).data
+        return activityobj.creator.username
     
 
     

@@ -4,12 +4,6 @@ from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from rest_framework.authtoken.models import Token
 
-
-class SocialSerializer(serializers.Serializer):
-    provider = serializers.CharField(max_length=255, required=True)
-    access_token = serializers.CharField(max_length=4096, required=True, trim_whitespace=True)
-
-
 class UserProfile(serializers.ModelSerializer):
     user = serializers.ModelSerializer()
 
@@ -17,7 +11,7 @@ class UserProfile(serializers.ModelSerializer):
         model = UserProfile
         fields = (
             'user',
-            'access_type',
+            'grantType',
         )
 
     def get_user(self):
@@ -98,3 +92,4 @@ class UserSerializer(serializers.ModelSerializer):
             user.username = username
             user.save()
         return
+

@@ -18,7 +18,7 @@ class ActivityViewSet(viewsets.GenericViewSet):
         if not card_id or not content:
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
         try:
-            cardobj=Card.objects.get(card_id)
+            cardobj=Card.objects.get(id = card_id)
         except Card.DoesNotExist:
             return Response({'error':'card not found'},status=status.HTTP_404_NOT_FOUND)
         
@@ -39,7 +39,7 @@ class ActivityViewSet(viewsets.GenericViewSet):
             return Response({'error':'activity not found'},status=status.HTTP_404_NOT_FOUND)
         if not actobj.is_comment:
             return Response({'error':'this activity is not a comment'},status=status.HTTP_403_FORBIDDEN)
-        if actobj.creator is not user:
+        if actobj.creator != user:
             return Response({'error':'This is not your comment'},status=status.HTTP_403_FORBIDDEN)
         actobj.content=content
         actobj.save()

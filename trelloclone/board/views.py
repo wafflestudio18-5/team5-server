@@ -30,6 +30,7 @@ class BoardViewSet(viewsets.GenericViewSet):
         boardlist = UserBoard.objects.filter(user=user).all()
         return Response(UserBoardSerializer(boardlist,many=True).data,status=status.HTTP_200_OK)
 
+
     def get(self,request):
         board_id = request.data.get('id')
         board_key = request.data.get('key')
@@ -69,10 +70,20 @@ class BoardViewSet(viewsets.GenericViewSet):
         user=request.user
         userboard = UserBoard.objects.get(user=user,board=board)
         if not userboard:
-            return Response({'error':'unathorized'},status=status.HTTP_403_FORBIDDEN)
+            return Response({'error':'unauthorized'},status=status.HTTP_403_FORBIDDEN)
         usertoinvite = User.objects.get(username=username)
         if not usertoinvite:
-            Response({'error':'User does not exist'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error':'User does not exist'},status=status.HTTP_400_BAD_REQUEST)
+
+        dup_error=False
+        try:
+            duplicate_check = UserBoard.objects.get(user=usertoinvite, board=board)
+            if duplicate_check: dup_error=True
+        except:
+            pass
+        if dup_error:
+            return Response({'error':'That user is already in the board'},status=status.HTTP_400_BAD_REQUEST)
+
         UserBoard.objects.create(user=usertoinvite,board=board)
         return Response(UserSerializer(usertoinvite).data,status=status.HTTP_200_OK)
     

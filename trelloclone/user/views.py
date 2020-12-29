@@ -61,12 +61,12 @@ class UserViewSet(viewsets.GenericViewSet):
     def create(self, request):
         data = request.data
 
-        if data.get('access_type') == "OAUTH":
-            provider = data.get('provider')
-            if provider == "Google": data = self.google(data)
+        if data.get('grantType') == "OAUTH":
+            authProvider = data.get('authProvider')
+            if authProvider == "Google": data = self.google(data)
             else: data = self.facebook(data)
             if bool(data) == False: return Response({"error": "Invalid token"}, status=status.HTTP_403_FORBIDDEN)
-            if provider == "Google": data = self.gg_trans(data)
+            if authProvider == "Google": data = self.gg_trans(data)
             else: data = self.fb_trans(data)
 
         serializer = self.get_serializer(data=data)
@@ -76,8 +76,8 @@ class UserViewSet(viewsets.GenericViewSet):
         data = serializer.validated_data
         data['token'] = user.auth_token.key
 
-        type = request.data.get('access_type')
-        UserProfile.objects.create(user=user, access_type=type)
+        type = request.data.get('grantType')
+        UserProfile.objects.create(user=user, grantType=type)
 
         return Response(data, status=status.HTTP_201_CREATED)
 
@@ -93,9 +93,9 @@ class UserViewSet(viewsets.GenericViewSet):
         data = request.data
         user = None
 
-        if data.get('access_type') == "OAUTH":
-            provider = data.get('provider')
-            if provider == "Google": data = self.google(data)
+        if data.get('grantType') == "OAUTH":
+            authProvider = data.get('authProvider')
+            if authProvider == "Google": data = self.google(data)
             else: data = self.facebook(data)
             if bool(data) == False: return Response({"error": "Invalid token"}, status=status.HTTP_403_FORBIDDEN)
             else:
@@ -118,7 +118,7 @@ class UserViewSet(viewsets.GenericViewSet):
 
         if user:
             type_check = UserProfile.objects.get(user=user)
-            if type_check.access_type != request.data.get('access_type'):
+            if type_check.grantType != request.data.get('grantType'):
                 return Response({"error": "No matching user found. Re-check your account type."}, status=status.HTTP_403_FORBIDDEN)
             login(request, user)
             data = self.get_serializer(user).data
@@ -134,23 +134,42 @@ class UserViewSet(viewsets.GenericViewSet):
         return Response()
 
     def retrieve(self, request, pk=None):
-        user = request.user
-        token_error = False
+        if pk=="list":
+            return self.list(request)
+        if pk=="me":
+            user = request.user
+            token_error = False
+            try:
+                rst = self.get_serializer(user).data
+            except:
+                token_error = True
+            if token_error:
+                return Response({"error": "Provide proper token"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(rst)
+
+        user_found=False
         try:
-            rst = self.get_serializer(user).data
+            user = User.objects.get(id=pk)
+            if user: user_found=True
         except:
-            token_error = True
-        if token_error:
-            return Response({"error": "Provide proper token"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(rst)
+            pass
+        if user_found:
+            rst = self.get_serializer(user).data
+            return Response(rst)
+
+        return Response({"error": "Invalid id value"}, status=status.HTTP_400_BAD_REQUEST)
+
+    #@action(detail=False, methods=['GET'])
+    def list(self, request):
+        if self.get_queryset().count()==0:
+            return Response({"error": "No user found."}, status=status.HTTP_400_BAD_REQUEST)
+        users = self.get_queryset()
+        return Response(self.get_serializer(users, many=True).data)
 
     def update(self, request, pk=None):
-        if pk != 'me':
-            return Response({"error": "No permission to other's info"}, status=status.HTTP_403_FORBIDDEN)
 
         user = request.user
         data = request.data
-        data = self.add_created(data, True)
         serializer = self.get_serializer(user, data=data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.update(user, serializer.validated_data)
