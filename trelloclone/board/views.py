@@ -21,6 +21,8 @@ class BoardViewSet(viewsets.GenericViewSet):
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
         headlist = List.objects.create(is_head=True)
         newboard = Board.objects.create(name=name,head=headlist)
+        newboard.key=str(newboard.id).zfill(8)
+        newboard.save()
         UserBoard.objects.create(user=user,board=newboard)
         return Response(self.get_serializer(newboard).data,status=status.HTTP_201_CREATED)
 
@@ -38,9 +40,15 @@ class BoardViewSet(viewsets.GenericViewSet):
         if board_id and board_key:
             Response({'error':'too many arguments'},status=status.HTTP_400_BAD_REQUEST)
         elif board_id:
-            board = Board.objects.get(id=board_id)
+            try:
+                board = Board.objects.get(id=board_id)
+            except Board.DoesNotExist:
+                return Response({"error": "board not found"},status=status.HTTP_404_NOT_FOUND)
         elif board_key:
-            board = Board.objects.get(key=board_key)
+            try:
+                board = Board.objects.get(key=board_key)
+            except Board.DoesNotExist:
+                return Response({"error": "board not found"},status=status.HTTP_404_NOT_FOUND)
         else:
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
         if not board:
