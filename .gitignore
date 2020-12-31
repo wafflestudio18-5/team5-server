@@ -4,6 +4,13 @@
 __pycache__
 __pycache__/
 /__pycache__
+
+
+**/migrations/*
+**/migrations/
+**/**/migrations
+.cache
+
 *.py[cod]
 # compiled output
 /dist
