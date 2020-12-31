@@ -105,7 +105,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'HOST': 'waffle-toyproject.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
         'PORT': 3306,
-        'NAME': 'waffle-toyproject',
+        'NAME': 'waffle_toyproject',
         'USER': 'waffle-toyproject',
         'PASSWORD': 'password',
     }
