@@ -32,6 +32,8 @@ TIME_ZONE='Asia/Seoul'
 
 
 ALLOWED_HOSTS = [
+    '15.164.222.199',
+    'ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
     'localhost',
     '127.0.0.1',
 ]
@@ -101,7 +103,7 @@ WSGI_APPLICATION = 'trelloclone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
+        'HOST': 'waffle-toyproject.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
         'PORT': 3306,
         'NAME': 'toy_project',
         'USER': 'toy_project',
