@@ -103,10 +103,10 @@ WSGI_APPLICATION = 'trelloclone.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'waffle-toyproject.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
+        'HOST': 'toyproject-trelloclone.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
         'PORT': 3306,
-        'NAME': 'toy_project',
-        'USER': 'toy_project',
+        'NAME': 'waffle_toyproject',
+        'USER': 'waffle-toyproject',
         'PASSWORD': 'password',
     }
 }
