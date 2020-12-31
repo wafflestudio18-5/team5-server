@@ -5,10 +5,11 @@ from django.utils import dateformat, timezone
 class Card(models.Model):
     name = models.CharField(max_length=30, db_index=True, null=False)
     description = models.TextField(db_index=True, null=True)
-    due_date = models.DateTimeField(auto_now=False, blank=True)
+    due_date = models.DateTimeField(auto_now=False, blank=True,null=True)
     date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
     created_at = models.DateTimeField(default=date, blank=True)
     is_head = models.BooleanField(default=False)
+    key = models.CharField(max_length=10, null=True)
 
     creator = models.ForeignKey(User, related_name='card_creator', on_delete=models.DO_NOTHING,null=True)
     list = models.ForeignKey('list.List', related_name='card_list', on_delete=models.CASCADE,null=True)
