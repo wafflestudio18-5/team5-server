@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 from rest_framework.decorators import action
 from card.models import Card
 class ListViewSet(viewsets.GenericViewSet):
+    queryset = List.objects.all()
     serializer_class=ListSerializer
     def create(self,request):
         user=request.user
