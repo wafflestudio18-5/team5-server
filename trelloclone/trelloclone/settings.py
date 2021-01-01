@@ -25,11 +25,10 @@ SECRET_KEY = 'gr4e-9g!y1fl4t1yp2-)pjv--7f!!mti-7y+s#@s@zoeiu63an'
 DEBUG = True
 DEBUG_TOOLBAR = os.getenv('DEBUG_TOOLBAR') in ('true', 'True')
 
-DATETIME_FORMAT='%d-%m-%Y %H:%M:%S'
-USE_L10N=True
-USE_TZ=True
-TIME_ZONE='Asia/Seoul'
-
+DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
+USE_L10N = True
+USE_TZ = True
+TIME_ZONE = 'Asia/Seoul'
 
 ALLOWED_HOSTS = [
     '15.164.222.199',
@@ -89,7 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-               # 'django.template.context_processors.request',
+                # 'django.template.context_processors.request',
             ],
         },
     },
@@ -110,6 +109,16 @@ DATABASES = {
         'PASSWORD': 'password',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'HOST': '127.0.0.1',
+#         'PORT': 3306,
+#         'NAME': 'toy_project',
+#         'USER': 'toy_project',
+#         'PASSWORD': 'password',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

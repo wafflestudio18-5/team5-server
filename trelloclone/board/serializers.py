@@ -32,12 +32,14 @@ class BoardSerializer(serializers.ModelSerializer):
 class UserBoardSerializer(BoardSerializer):
     id=serializers.SerializerMethodField()
     name=serializers.SerializerMethodField()
+    key=serializers.SerializerMethodField()
     class Meta:
         model=Board
         fields=(
             'id',
             'name',
             'star',
+            'key',
         )
     def get_id(self,UBobj):
         boardobj=UBobj.board
@@ -45,5 +47,6 @@ class UserBoardSerializer(BoardSerializer):
     def get_name(self,UBobj):
         boardobj=UBobj.board
         return boardobj.name
-
-    
+    def get_key(self, UBobj):
+        boardobj = UBobj.board
+        return boardobj.key

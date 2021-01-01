@@ -34,7 +34,7 @@ class CardViewSet(viewsets.GenericViewSet):
             return Response({"error": "Not authorized to create in this board"},status=status.HTTP_403_FORBIDDEN)
 
         createdcard=Card.objects.create(name=name,list=listobj,creator=user)
-        createdcard.key=str(newboard.id).zfill(8)
+        createdcard.key=str(createdcard.id).zfill(8)
         headcard=listobj.head
         befprev=headcard.prev
         headcard.prev=createdcard
@@ -138,7 +138,7 @@ class CardViewSet(viewsets.GenericViewSet):
             if list_id is not beflist:
                 cardobj.list = listobj
                 ctt="moved this card from "+beflist.name+" to "+listobj.name
-                mact=Activity.objects.create(creator=user,card=createdcard,content=ctt)
+                mact=Activity.objects.create(creator=user,card=cardobj,content=ctt)
         cardobj.save()
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
@@ -147,22 +147,12 @@ class CardViewSet(viewsets.GenericViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get(self,request):
-        card_id=request.data.get('id')
-        card_key=request.data.get('key')
-        if card_id and card_key:
-            Response({'error':'too many arguments'},status=status.HTTP_400_BAD_REQUEST)
-        elif card_id:
-            try:
-                cardobj=Card.objects.get(id=card_id)
-            except Card.DoesNotExist:
-                return Response({"error": "card not found"},status=status.HTTP_404_NOT_FOUND)
-        elif card_key:
-            try:
-                cardobj=Card.objectsget(key=card_key)
-            except Card.DoesNotExist:
-                return Response({"error": "card not found"},status=status.HTTP_404_NOT_FOUND)
-        else:
-            return Response({"error": "missing request data."},status=status.HTTP_400_BAD_REQUEST)
+        card_key = request.GET.get('key')
+        try:
+            cardobj=Card.objects.get(key=card_key)
+        except Card.DoesNotExist:
+            return Response({"error": "card not found"},status=status.HTTP_404_NOT_FOUND)
+
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
     def delete(self, request):
