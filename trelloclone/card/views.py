@@ -138,7 +138,7 @@ class CardViewSet(viewsets.GenericViewSet):
             if list_id is not beflist:
                 cardobj.list = listobj
                 ctt="moved this card from "+beflist.name+" to "+listobj.name
-                mact=Activity.objects.create(creator=user,card=createdcard,content=ctt)
+                mact=Activity.objects.create(creator=user,card=cardobj,content=ctt)
         cardobj.save()
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
