@@ -99,34 +99,33 @@ WSGI_APPLICATION = 'trelloclone.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'HOST': 'toyproject-trelloclone.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
-#         'PORT': 3306,
-#         'NAME': 'waffle_toyproject',
-#         'USER': 'waffle-toyproject',
-#         'PASSWORD': 'password',
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
+        'HOST': 'toyproject-trelloclone.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
         'PORT': 3306,
-        'NAME': 'toy_project',
-        'USER': 'toy_project',
+        'NAME': 'waffle_toyproject',
+        'USER': 'waffle-toyproject',
         'PASSWORD': 'password',
     }
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'HOST': '127.0.0.1',
+#         'PORT': 3306,
+#         'NAME': 'toy_project',
+#         'USER': 'toy_project',
+#         'PASSWORD': 'password',
+#     }
+# }
+
+CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
-    '15.164.222.199',
-    'ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
-    'localhost',
-    '127.0.0.1',
+    'https://google.com',
+    'https://15.164.222.199',
+    'https://ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
 ]
 INSTALLED_APPS.append('corsheaders')
 MIDDLEWARE.append('corsheaders.middleware.CorsMiddleware')
