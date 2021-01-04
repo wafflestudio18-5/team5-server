@@ -53,9 +53,10 @@ class BoardViewSet(viewsets.GenericViewSet):
         board_id = request.data.get('id')
         if not board_id:
             return Response({'error': 'missing request data'}, status=status.HTTP_400_BAD_REQUEST)
-        board = Board.objects.get(id=board_id)
-        if not board:
-            Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            board = Board.objects.get(id=board_id)
+        except Board.DoesNotExist:
+            return Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
         board.delete()
         return Response(status=status.HTTP_200_OK)
 
