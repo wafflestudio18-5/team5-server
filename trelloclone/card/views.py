@@ -143,9 +143,6 @@ class CardViewSet(viewsets.GenericViewSet):
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
 
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
     def get(self,request):
         card_key = request.GET.get('key')
         try:
@@ -156,7 +153,7 @@ class CardViewSet(viewsets.GenericViewSet):
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
     def delete(self, request):
-        card_id = request.get('id')
+        card_id = request.data.get('id')
         if not card_id:
             return Response({"error": "missing request data."},status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -169,8 +166,11 @@ class CardViewSet(viewsets.GenericViewSet):
         prevcard=cardobj.prev
         nextcard=cardobj.next
         nextcard.prev=prevcard
-        cardobj.delete()
+        cardobj.prev=None
+        cardobj.save()
         nextcard.save()
+        cardobj.delete()
+        
         return Response(status=status.HTTP_200_OK)
     
 
