@@ -132,7 +132,6 @@ CORS_ORIGIN_WHITELIST = [
     'http://15.164.222.199',
     'http://ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
     'https://d8ntc1x3tplcn.cloudfront.net',
-    'https://d8ntc1x3tplcn.cloudfront.net/',
     'http://www.toyproject-trelloclone.shop',
 ]
 INSTALLED_APPS.append('corsheaders')

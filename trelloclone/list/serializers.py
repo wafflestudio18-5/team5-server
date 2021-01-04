@@ -34,16 +34,6 @@ class ListSerializer(serializers.ModelSerializer):
             return BasicCardSerializer(fullquery,many=True).data
         else:
             return []
-    def delete(self,listobj):
-        prevlist=listobj.prev
-        nextlist=listobj.next
-        listobj.prev=None
-        listobj.save()
-        nextlist.prev=prevlist
-        nextlist.save()
-        listobj.delete()
-        return
-
 
     
 
