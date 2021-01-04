@@ -47,11 +47,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
 
-        username = data.get('username')
+        # username = data.get('username')
         first_name = data.get('first_name')
         last_name = data.get('last_name')
-        if bool(username.isalnum())==False:
-            raise serializers.ValidationError("Username should not include special characters.")
+        # if bool(username.isalnum())==False:
+        #     raise serializers.ValidationError("Username should not include special characters.")
         if bool(first_name) ^ bool(last_name):
             raise serializers.ValidationError("First name and last name should appear together.")
         if first_name and last_name and not (first_name.isalpha() and last_name.isalpha()):
