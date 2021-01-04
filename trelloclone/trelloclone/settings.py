@@ -126,6 +126,9 @@ CORS_ORIGIN_WHITELIST = [
     'https://google.com',
     'https://15.164.222.199',
     'https://ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
+    'http://google.com',
+    'http://15.164.222.199',
+    'http://ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
 ]
 INSTALLED_APPS.append('corsheaders')
 MIDDLEWARE.append('corsheaders.middleware.CorsMiddleware')
