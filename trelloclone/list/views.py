@@ -106,9 +106,8 @@ class ListViewSet(viewsets.GenericViewSet):
         prevlist=todelete.prev
         nextlist=todelete.next
         nextlist.prev=prevlist
-        todelete.delete()
         nextlist.save()
-        
+        todelete.delete()
         return Response(status=status.HTTP_200_OK)
 
     def get(self,request):
@@ -119,6 +118,7 @@ class ListViewSet(viewsets.GenericViewSet):
             listobj=List.objects.get(id=list_id)
         except List.DoesNotExist:
             Response({'error':'List does not exist'},status=status.HTTP_400_BAD_REQUEST)
+        
         return Response(self.get_serializer(listobj).data,status=status.HTTP_200_OK)
 
 
