@@ -106,6 +106,8 @@ class ListViewSet(viewsets.GenericViewSet):
         prevlist=todelete.prev
         nextlist=todelete.next
         nextlist.prev=prevlist
+        todelete.prev=None
+        todelete.save()
         nextlist.save()
         todelete.delete()
         return Response(status=status.HTTP_200_OK)
