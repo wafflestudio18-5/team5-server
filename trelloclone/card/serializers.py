@@ -31,6 +31,16 @@ class CardSerializer(serializers.ModelSerializer):
     def get_activities(self, card):
         activities = Activity.objects.all().filter(card_id=card.id).order_by('created_at')
         return ActivitySerializer(activities, many=True, context=self.context).data
+    
+    def delete(self,card):
+        prevcard=card.prev
+        nextcard=card.next
+        card.prev=None
+        card.save()
+        nextcard.prev=prevcard
+        nextcard.save()
+        card.delete()
+        return
 
 class BasicCardSerializer(CardSerializer):
     class Meta:

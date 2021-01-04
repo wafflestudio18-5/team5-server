@@ -12,6 +12,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             'creator',
             'created_at',
             'content',
+            'is_comment',
         )
     def get_creator(self,activityobj):
         return activityobj.creator.username
