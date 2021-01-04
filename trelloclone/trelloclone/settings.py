@@ -35,6 +35,8 @@ ALLOWED_HOSTS = [
     'ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
     'localhost',
     '127.0.0.1',
+    'www.toyproject-trelloclone.shop',
+    'toyproject-trelloclone.shop',
 ]
 
 INSTALLED_APPS = [
@@ -129,6 +131,9 @@ CORS_ORIGIN_WHITELIST = [
     'http://google.com',
     'http://15.164.222.199',
     'http://ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
+    'https://d8ntc1x3tplcn.cloudfront.net',
+    'https://d8ntc1x3tplcn.cloudfront.net/',
+    'http://www.toyproject-trelloclone.shop',
 ]
 INSTALLED_APPS.append('corsheaders')
 MIDDLEWARE.append('corsheaders.middleware.CorsMiddleware')
