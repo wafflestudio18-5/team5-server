@@ -166,8 +166,11 @@ class CardViewSet(viewsets.GenericViewSet):
         prevcard=cardobj.prev
         nextcard=cardobj.next
         nextcard.prev=prevcard
-        cardobj.delete()
+        cardobj.prev=None
+        cardobj.save()
         nextcard.save()
+        cardobj.delete()
+        
         return Response(status=status.HTTP_200_OK)
     
 
