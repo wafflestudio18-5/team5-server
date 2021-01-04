@@ -35,6 +35,8 @@ ALLOWED_HOSTS = [
     'ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
     'localhost',
     '127.0.0.1',
+    'www.toyproject-trelloclone.shop',
+    'toyproject-trelloclone.shop',
 ]
 
 INSTALLED_APPS = [
