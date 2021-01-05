@@ -40,6 +40,7 @@ ALLOWED_HOSTS = [
 ]
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -64,6 +65,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -125,9 +127,8 @@ DATABASES = {
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
-    '127.0.0.1',
-    'localhost',
-    'localhost:3000',
+    'http://127.0.0.1',
+    'http://127.0.0.1:8000',
     'http://localhost',
     'http://localhost:3000',
     'https://google.com',
@@ -136,11 +137,11 @@ CORS_ORIGIN_WHITELIST = [
     'http://google.com',
     'http://15.164.222.199',
     'http://ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
-    'https://d8ntc1x3tplcn.cloudfront.net',
+    'http://d8ntc1x3tplcn.cloudfront.net',
     'http://www.toyproject-trelloclone.shop',
 ]
-INSTALLED_APPS.append('corsheaders')
-MIDDLEWARE.append('corsheaders.middleware.CorsMiddleware')
+#INSTALLED_APPS.append('corsheaders')
+#MIDDLEWARE.append('corsheaders.middleware.CorsMiddleware')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
