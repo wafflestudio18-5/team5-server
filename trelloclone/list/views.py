@@ -124,29 +124,3 @@ class ListViewSet(viewsets.GenericViewSet):
             Response({'error':'List does not exist'},status=status.HTTP_400_BAD_REQUEST)
         
         return Response(self.get_serializer(listobj).data,status=status.HTTP_200_OK)
-
-    @action(detail=False, methods=['GET'])
-    def board_list(self, request):
-        print("came in")
-        board_key = request.GET.get('board_key')
-        print(board_key)
-        boardobj = Board.objects.get(key=board_key)
-        print(boardobj)
-        listquery = List.objects.filter(board=boardobj).all()
-        headlist = boardobj.head
-        firstlist = headlist.prev
-
-        def listlistrec(listobj):
-            prevlist = listobj.prev
-            returnquery = listquery.filter(id=listobj.id).all()
-            if prevlist:
-                returnquery = list(chain(listlistrec(prevlist), returnquery))
-            return returnquery
-
-        if firstlist:
-            fullquery = listlistrec(firstlist)
-            page = self.paginate_queryset(fullquery)
-            serializer = ListSerializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        else:
-            return []
