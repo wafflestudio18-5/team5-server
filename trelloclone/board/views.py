@@ -50,7 +50,7 @@ class BoardViewSet(viewsets.GenericViewSet):
 
         elif board_id:
             try:
-                board = Board.objects.get(key=board_id)
+                board = Board.objects.get(id=board_id)
             except Board.DoesNotExist:
                 return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
 
