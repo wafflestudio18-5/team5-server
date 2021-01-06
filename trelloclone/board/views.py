@@ -35,7 +35,7 @@ class BoardViewSet(viewsets.GenericViewSet):
         boardlist = UserBoard.objects.filter(user=user).all()
         page = self.paginate_queryset(boardlist)
         serializer = UserBoardSerializer(page, many=True)
-        return self.get_paginated_response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data)
         #return Response(UserBoardSerializer(boardlist, many=True).data, status=status.HTTP_200_OK)
 
     def get(self, request):
