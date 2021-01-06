@@ -11,7 +11,7 @@ from user.serializers import UserSerializer
 from django.contrib.auth.models import User
 
 
-class BoardViewSet(viewsets.GenericViewSet):
+class BoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
