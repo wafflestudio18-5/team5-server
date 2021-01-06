@@ -9,10 +9,18 @@ from rest_framework.decorators import action
 # from django.contrib.auth.models import User
 from user.serializers import UserSerializer
 from django.contrib.auth.models import User
-from rest_framework import mixins ##
 
-class BoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
-    paginate_by = 5
+from rest_framework.pagination import PageNumberPagination
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
+
+
+class BoardViewSet(viewsets.GenericViewSet):
+    pagination_class = StandardResultsSetPagination
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
