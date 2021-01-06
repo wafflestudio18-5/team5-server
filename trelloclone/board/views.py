@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from rest_framework import mixins ##
 
 class BoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    paginate_by = 5
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
