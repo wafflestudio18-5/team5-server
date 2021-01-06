@@ -26,7 +26,10 @@ class BoardSerializer(serializers.ModelSerializer):
             return returnquery
         if firstlist:
             fullquery=listlistrec(firstlist)
-            return ListSerializer(fullquery,many=True).data
+            page = self.paginate_queryset(fullquery) ##
+            return self.get_paginated_response(page)
+
+            #return ListSerializer(fullquery,many=True).data
         else:
             return []
 class UserBoardSerializer(BoardSerializer):
