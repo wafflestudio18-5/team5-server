@@ -9,7 +9,7 @@ from rest_framework.decorators import action
 # from django.contrib.auth.models import User
 from user.serializers import UserSerializer
 from django.contrib.auth.models import User
-
+from rest_framework import mixins ##
 
 class BoardViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Board.objects.all()
