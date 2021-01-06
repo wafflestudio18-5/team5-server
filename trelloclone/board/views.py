@@ -42,7 +42,6 @@ class BoardViewSet(viewsets.GenericViewSet):
             board = Board.objects.get(key=board_key)
         except Board.DoesNotExist:
             return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
-
         if not board:
             Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 

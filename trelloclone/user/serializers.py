@@ -47,7 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
 
-        # username = data.get('username')
+        # username = data.get('username') # In case of social login, special char. ought to be allowed.
         first_name = data.get('first_name')
         last_name = data.get('last_name')
         # if bool(username.isalnum())==False:
