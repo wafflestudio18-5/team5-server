@@ -26,6 +26,7 @@ class BoardSerializer(serializers.ModelSerializer):
             return returnquery
         if firstlist:
             fullquery=listlistrec(firstlist)
+
             return ListSerializer(fullquery,many=True).data
         else:
             return []

@@ -10,8 +10,8 @@ from rest_framework.decorators import action
 from user.serializers import UserSerializer
 from django.contrib.auth.models import User
 
-
 class BoardViewSet(viewsets.GenericViewSet):
+    
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
 
@@ -33,7 +33,10 @@ class BoardViewSet(viewsets.GenericViewSet):
     def boardlist(self, request):
         user = request.user
         boardlist = UserBoard.objects.filter(user=user).all()
-        return Response(UserBoardSerializer(boardlist, many=True).data, status=status.HTTP_200_OK)
+        page = self.paginate_queryset(boardlist)
+        serializer = UserBoardSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+        #return Response(UserBoardSerializer(boardlist, many=True).data, status=status.HTTP_200_OK)
 
     def get(self, request):
         board_key = request.GET.get('key')
@@ -52,9 +55,10 @@ class BoardViewSet(viewsets.GenericViewSet):
         board_id = request.data.get('id')
         if not board_id:
             return Response({'error': 'missing request data'}, status=status.HTTP_400_BAD_REQUEST)
-        board = Board.objects.get(id=board_id)
-        if not board:
-            Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            board = Board.objects.get(id=board_id)
+        except Board.DoesNotExist:
+            return Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
         board.delete()
         return Response(status=status.HTTP_200_OK)
 
@@ -102,7 +106,11 @@ class BoardViewSet(viewsets.GenericViewSet):
             Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
         UBlist = UserBoard.objects.filter(board=board).all()
         userlist = User.objects.filter(user_board__in=UBlist).all()
-        return Response(UserSerializer(userlist, many=True).data, status=status.HTTP_200_OK)
+
+        page = self.paginate_queryset(userlist)
+        serializer = UserSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+        #return Response(UserSerializer(userlist, many=True).data, status=status.HTTP_200_OK)
 
 
     def put(self, request):

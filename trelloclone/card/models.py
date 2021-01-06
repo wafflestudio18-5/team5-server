@@ -14,7 +14,7 @@ class Card(models.Model):
     creator = models.ForeignKey(User, related_name='card_creator', on_delete=models.DO_NOTHING,null=True)
     list = models.ForeignKey('list.List', related_name='card_list', on_delete=models.CASCADE,null=True)
     board = models.ForeignKey('board.Board', related_name='card_board', on_delete=models.CASCADE,null=True)
-    prev = models.OneToOneField('self', related_name='next', on_delete=models.DO_NOTHING,null=True)
+    prev = models.OneToOneField('self', related_name='next', on_delete=models.SET(None),null=True)
 
 class UserCard(models.Model):
     user = models.ForeignKey(User, related_name='user_card', on_delete=models.DO_NOTHING)

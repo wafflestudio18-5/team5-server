@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'gr4e-9g!y1fl4t1yp2-)pjv--7f!!mti-7y+s#@s@zoeiu63an'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 DEBUG_TOOLBAR = os.getenv('DEBUG_TOOLBAR') in ('true', 'True')
 
 DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
@@ -57,11 +57,13 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
+
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 100
+    )
 }
 
 MIDDLEWARE = [
@@ -127,6 +129,10 @@ DATABASES = {
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1',
+    'http://127.0.0.1:8000',
+    'http://localhost',
+    'http://localhost:3000',
     'https://google.com',
     'https://15.164.222.199',
     'https://ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com',
@@ -171,3 +177,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
