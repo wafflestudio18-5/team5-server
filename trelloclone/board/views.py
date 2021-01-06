@@ -10,15 +10,6 @@ from rest_framework.decorators import action
 from user.serializers import UserSerializer
 from django.contrib.auth.models import User
 
-from rest_framework.pagination import PageNumberPagination
-
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 5
-    page_size_query_param = 'page_size'
-    max_page_size = 1000
-
-
-
 class BoardViewSet(viewsets.GenericViewSet):
     pagination_class = StandardResultsSetPagination
     queryset = Board.objects.all()
@@ -42,7 +33,10 @@ class BoardViewSet(viewsets.GenericViewSet):
     def boardlist(self, request):
         user = request.user
         boardlist = UserBoard.objects.filter(user=user).all()
-        return Response(UserBoardSerializer(boardlist, many=True).data, status=status.HTTP_200_OK)
+        page = self.paginate_queryset(boardlist)
+        serializer = UserBoardSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+        #return Response(UserBoardSerializer(boardlist, many=True).data, status=status.HTTP_200_OK)
 
     def get(self, request):
         board_key = request.GET.get('key')
