@@ -28,7 +28,7 @@ class BoardViewSet(viewsets.GenericViewSet):
         newboard.save()
         headlist.board=newboard
         headlist.save()
-        UserBoard.objects.create(user=user, board=newboard)
+        UserBoard.objects.create(user=user, board=newboard, is_creator=True)
         return Response(self.get_serializer(newboard).data, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['GET'])
@@ -37,8 +37,6 @@ class BoardViewSet(viewsets.GenericViewSet):
         if not user.is_authenticated:
             return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         boardlist = UserBoard.objects.filter(user=user).all()
-        if boardlist.count == 0 :
-            print("here")
         page = self.paginate_queryset(boardlist)
         serializer = UserBoardSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
@@ -66,25 +64,32 @@ class BoardViewSet(viewsets.GenericViewSet):
         else:
             return Response({'error': 'missing params data'}, status=status.HTTP_400_BAD_REQUEST)
 
-        belong = False
         try :
-            check = UserBoard.objects.get(user=user, board=board)
-            if check : belong = True
+            UserBoard.objects.get(user=user, board=board)
         except UserBoard.DoesNotExist:
-            return Response({"error": "you do not belong to this board"}, status=status.HTTP_404_NOT_FOUND)
-
+            return Response({"error": "You are not permitted to access this board"}, status=status.HTTP_403_FORBIDDEN)
 
         return Response(self.get_serializer(board).data, status=status.HTTP_200_OK)
 
 
     def delete(self, request):
+        user = request.user
+        if not user.is_authenticated: # 1. check login
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         board_id = request.data.get('id')
-        if not board_id:
+        if not board_id: # 2. check data
             return Response({'error': 'missing request data'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             board = Board.objects.get(id=board_id)
-        except Board.DoesNotExist:
+        except Board.DoesNotExist: # 3. check db
             return Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        try :
+            ub = UserBoard.objects.get(user=user, board=board)
+        except UserBoard.DoesNotExist: # 4. check user belongs to the board
+            return Response({"error": "You are not permitted to access this board"}, status=status.HTTP_403_FORBIDDEN)
+        if ub.is_creator == False: # 5. check user is creator.
+            return Response({"error": "You are not permitted to delete this board"}, status=status.HTTP_403_FORBIDDEN)
+
         board.delete()
         return Response(status=status.HTTP_200_OK)
 
