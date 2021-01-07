@@ -52,10 +52,10 @@ class UserSerializer(serializers.ModelSerializer):
         last_name = data.get('last_name')
         # if bool(username.isalnum())==False:
         #     raise serializers.ValidationError("Username should not include special characters.")
-        if bool(first_name) ^ bool(last_name):
-            raise serializers.ValidationError("First name and last name should appear together.")
-        if first_name and last_name and not (first_name.isalpha() and last_name.isalpha()):
-            raise serializers.ValidationError("First name or last name should not have number.")
+        # if bool(first_name) ^ bool(last_name):
+        #     raise serializers.ValidationError("First name and last name should appear together.")
+        # if first_name and last_name and not (first_name.isalpha() and last_name.isalpha()):
+        #     raise serializers.ValidationError("First name or last name should not have number.")
         # 생성하는거면 email과 username 중복을 모두 확인하고, 업데이트하는거면 username중복만 체크한다.
         email = data.get('email')
         create = False
