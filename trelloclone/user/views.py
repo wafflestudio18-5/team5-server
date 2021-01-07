@@ -115,6 +115,8 @@ class UserViewSet(viewsets.GenericViewSet):
             else :
                 username = self.pop_username(email)
                 user = authenticate(request, username=username, email=email, password=password)
+            if not user:
+                return Response({"error": "Incorrect password. Re-check your account."})
 
         if user:
             type_check = UserProfile.objects.get(user=user)
