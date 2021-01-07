@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'gr4e-9g!y1fl4t1yp2-)pjv--7f!!mti-7y+s#@s@zoeiu63an'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 DEBUG_TOOLBAR = os.getenv('DEBUG_TOOLBAR') in ('true', 'True')
 
 DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
