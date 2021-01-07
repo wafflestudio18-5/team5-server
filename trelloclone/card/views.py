@@ -40,7 +40,7 @@ class CardViewSet(viewsets.GenericViewSet):
         headcard.prev=createdcard
         createdcard.prev=befprev
         headcard.save()
-        contentdt=user.username+" added this card to "+listobj.name
+        contentdt=" added this card to "+listobj.name
         cact=Activity.objects.create(creator=user,card=createdcard,content=contentdt)
         createdcard.save()
         
@@ -83,7 +83,7 @@ class CardViewSet(viewsets.GenericViewSet):
             if dup_error:
                 return Response({"error": "That user is already the member of this card"}, status=status.HTTP_400_BAD_REQUEST)
 
-            addcontent= user.username + " added "+toinvite.username+" to this card"
+            addcontent= " added "+toinvite.username+" to this card"
             if toinvite is user:
                 addcontent= "joined this card"
             addact=Activity.objects.create(creator=user,card=cardobj,content=addcontent)
@@ -137,7 +137,7 @@ class CardViewSet(viewsets.GenericViewSet):
                     
             if list_id is not beflist.id:
                 cardobj.list = listobj
-                ctt="moved this card from "+beflist.name+" to "+listobj.name
+                ctt=" moved this card from "+beflist.name+" to "+listobj.name
                 mact=Activity.objects.create(creator=user,card=cardobj,content=ctt)
         cardobj.save()
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
