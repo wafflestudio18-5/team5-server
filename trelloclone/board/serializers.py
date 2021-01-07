@@ -1,19 +1,28 @@
 from rest_framework import serializers
 from list.models import List
 from card.models import Card
-from board.models import Board
+from board.models import Board,UserBoard
 from list.serializers import ListSerializer
 from card.serializers import BasicCardSerializer
 from itertools import chain
 class BoardSerializer(serializers.ModelSerializer):
+    star=serializers.SerializerMethodField()
     lists=serializers.SerializerMethodField()
     class Meta:
         model=Board
         fields=(
             'id',
             'name',
+            'star',
             'lists',
         )
+    def get_star(self,boardobj):
+        user=self.context['request'].user
+        try:
+            ub=UserBoard.objects.get(board=boardobj,user=user)
+        except:
+            return None
+        return ub.star
     def get_lists(self,boardobj):
         listquery=List.objects.filter(board=boardobj).all()
         headlist=boardobj.head
@@ -29,12 +38,12 @@ class BoardSerializer(serializers.ModelSerializer):
             return ListSerializer(fullquery,many=True).data
         else:
             return []
-class UserBoardSerializer(BoardSerializer):
+class UserBoardSerializer(serializers.ModelSerializer):
     id=serializers.SerializerMethodField()
     name=serializers.SerializerMethodField()
     key=serializers.SerializerMethodField()
     class Meta:
-        model=Board
+        model=UserBoard
         fields=(
             'id',
             'name',
