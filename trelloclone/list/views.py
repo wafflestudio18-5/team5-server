@@ -23,15 +23,16 @@ class ListViewSet(viewsets.GenericViewSet):
         headlist=board.head
         userboard=UserBoard.objects.filter(user=user,board=board)
         if userboard:
-            headcard = Card.objects.create(is_head=True)
+            headcard = Card.objects.create(is_head=True,board=board)
             createdlist=List.objects.create(name=name,head=headcard,board=board)
-            headcard.list=createdlist
-            headcard.save()
+            
             befprev=headlist.prev
             headlist.prev=createdlist
             createdlist.prev=befprev
             headlist.save()
             createdlist.save()
+            headcard.list=createdlist
+            headcard.save()
             return Response(self.get_serializer(createdlist).data,status=status.HTTP_201_CREATED)
         else:
             return Response({'error':'unathorized'},status=status.HTTP_403_FORBIDDEN)
@@ -58,7 +59,7 @@ class ListViewSet(viewsets.GenericViewSet):
             if not boardto:
                 return Response({'error':'Board not found'},status=status.HTTP_404_NOT_FOUND)
             if not prev_id:
-                if listtochange.prev is not None:
+                if listtochange.prev is not None or listtochange.board is not boardto:
                     try:
                         endlist=List.objects.get(board=boardto,prev=None)
                     except List.DoesNotExist:
