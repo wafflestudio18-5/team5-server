@@ -152,8 +152,11 @@ class BoardViewSet(viewsets.GenericViewSet):
         if name:
             board.name = name
         star = request.data.get('star')
-        if star:
-            ub.star = star
+        if star == "True" or star == "true":
+            ub.star=True
+            ub.save()
+        elif star == "False" or star == "false":
+            ub.star=False
             ub.save()
         board.save()
         return Response(BoardSerializer(board).data, status=status.HTTP_200_OK)
