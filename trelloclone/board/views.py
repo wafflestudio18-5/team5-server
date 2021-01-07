@@ -26,6 +26,8 @@ class BoardViewSet(viewsets.GenericViewSet):
         newboard = Board.objects.create(name=name, head=headlist)
         newboard.key = str(newboard.id).zfill(8)
         newboard.save()
+        headlist.board=newboard
+        headlist.save()
         UserBoard.objects.create(user=user, board=newboard)
         return Response(self.get_serializer(newboard).data, status=status.HTTP_201_CREATED)
 

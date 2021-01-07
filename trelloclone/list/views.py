@@ -25,6 +25,8 @@ class ListViewSet(viewsets.GenericViewSet):
         if userboard:
             headcard = Card.objects.create(is_head=True)
             createdlist=List.objects.create(name=name,head=headcard,board=board)
+            headcard.list=createdlist
+            headcard.save()
             befprev=headlist.prev
             headlist.prev=createdlist
             createdlist.prev=befprev

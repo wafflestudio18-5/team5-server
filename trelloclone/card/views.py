@@ -33,7 +33,7 @@ class CardViewSet(viewsets.GenericViewSet):
         if not ub:
             return Response({"error": "Not authorized to create in this board"},status=status.HTTP_403_FORBIDDEN)
 
-        createdcard=Card.objects.create(name=name,list=listobj,creator=user)
+        createdcard=Card.objects.create(name=name,list=listobj,creator=user,board=listobj.board)
         createdcard.key=str(createdcard.id).zfill(8)
         headcard=listobj.head
         befprev=headcard.prev
