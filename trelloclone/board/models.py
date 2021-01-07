@@ -12,4 +12,5 @@ class UserBoard(models.Model):
     user = models.ForeignKey(User, related_name='user_board', on_delete=models.CASCADE)
     board = models.ForeignKey(Board, related_name='user_board', on_delete=models.CASCADE)
     star = models.BooleanField(default=False)
+    is_creator = models.BooleanField(default=False)
 
