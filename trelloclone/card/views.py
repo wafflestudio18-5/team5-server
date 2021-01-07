@@ -95,7 +95,7 @@ class CardViewSet(viewsets.GenericViewSet):
             cardobj.name=name
         if description:
             cardobj.description=description
-        beflist=cardobj.list.id
+        beflist=cardobj.list
         if list_id:
             try:
                 listobj=List.objects.get(id=list_id)
@@ -103,7 +103,7 @@ class CardViewSet(viewsets.GenericViewSet):
                 return Response({"error": "list not found"},status=status.HTTP_404_NOT_FOUND)
 
             if not prev_id:
-                if cardobj.prev is not None or beflist is not list_id:
+                if (cardobj.prev is not None) or (beflist is not list_id):
                     try:
                         endcard=Card.objects.get(list=listobj,prev=None)
                     except Card.DoesNotExist:
@@ -135,7 +135,7 @@ class CardViewSet(viewsets.GenericViewSet):
                     cardobj.prev=tprev
                     cardobj.save()
                     
-            if list_id is not beflist:
+            if list_id is not beflist.id:
                 cardobj.list = listobj
                 ctt="moved this card from "+beflist.name+" to "+listobj.name
                 mact=Activity.objects.create(creator=user,card=cardobj,content=ctt)
