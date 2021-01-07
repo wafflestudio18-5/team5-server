@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'gr4e-9g!y1fl4t1yp2-)pjv--7f!!mti-7y+s#@s@zoeiu63an'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 DEBUG_TOOLBAR = os.getenv('DEBUG_TOOLBAR') in ('true', 'True')
 
 DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
@@ -105,27 +105,27 @@ WSGI_APPLICATION = 'trelloclone.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'toyproject-trelloclone.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
-        'PORT': 3306,
-        'NAME': 'waffle_toyproject',
-        'USER': 'waffle-toyproject',
-        'PASSWORD': 'password',
-    }
-}
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'HOST': '127.0.0.1',
+#         'HOST': 'toyproject-trelloclone.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
 #         'PORT': 3306,
-#         'NAME': 'toy_project',
-#         'USER': 'toy_project',
+#         'NAME': 'waffle_toyproject',
+#         'USER': 'waffle-toyproject',
 #         'PASSWORD': 'password',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': '127.0.0.1',
+        'PORT': 3306,
+        'NAME': 'toy_project',
+        'USER': 'toy_project',
+        'PASSWORD': 'password',
+    }
+}
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [

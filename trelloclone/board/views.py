@@ -37,12 +37,17 @@ class BoardViewSet(viewsets.GenericViewSet):
         if not user.is_authenticated:
             return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         boardlist = UserBoard.objects.filter(user=user).all()
+        if boardlist.count == 0 :
+            print("here")
         page = self.paginate_queryset(boardlist)
         serializer = UserBoardSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
         #return Response(UserBoardSerializer(boardlist, many=True).data, status=status.HTTP_200_OK)
 
     def get(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
 
         board_key = request.GET.get('key')
         board_id = request.GET.get('id')
@@ -58,9 +63,16 @@ class BoardViewSet(viewsets.GenericViewSet):
                 board = Board.objects.get(id=board_id)
             except Board.DoesNotExist:
                 return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
-
         else:
             return Response({'error': 'missing params data'}, status=status.HTTP_400_BAD_REQUEST)
+
+        belong = False
+        try :
+            check = UserBoard.objects.get(user=user, board=board)
+            if check : belong = True
+        except UserBoard.DoesNotExist:
+            return Response({"error": "you do not belong to this board"}, status=status.HTTP_404_NOT_FOUND)
+
 
         return Response(self.get_serializer(board).data, status=status.HTTP_200_OK)
 
