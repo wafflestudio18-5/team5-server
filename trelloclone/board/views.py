@@ -104,11 +104,13 @@ class BoardViewSet(viewsets.GenericViewSet):
         if not board:
             Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
         user = request.user
-        userboard = UserBoard.objects.get(user=user, board=board)
-        if not userboard:
-            return Response({'error': 'unauthorized'}, status=status.HTTP_403_FORBIDDEN)
-        usertoinvite = User.objects.get(username=username)
-        if not usertoinvite:
+        try:
+            userboard = UserBoard.objects.get(user=user, board=board)
+        except UserBoard.DoesNotExist:
+            return Response({"error": "You are not permitted to access this board"}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            usertoinvite = User.objects.get(username=username)
+        except User.DoesNotExist:
             return Response({'error': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
         dup_error = False
@@ -129,7 +131,7 @@ class BoardViewSet(viewsets.GenericViewSet):
         board_id = request.GET.get('board_id')
         user = request.user
         if not user.is_authenticated:
-            return Response({'error': 'not logged in'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         if not board_id:
             return Response({'error': 'missing board_id (enter params)'}, status=status.HTTP_400_BAD_REQUEST)
         board = Board.objects.get(id=board_id)
@@ -146,6 +148,8 @@ class BoardViewSet(viewsets.GenericViewSet):
 
     def put(self, request):
         user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         board_id = request.data.get('id')
         if not board_id:
             return Response({'error': 'missing request data'}, status=status.HTTP_400_BAD_REQUEST)
