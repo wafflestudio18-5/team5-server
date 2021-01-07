@@ -116,7 +116,7 @@ class UserViewSet(viewsets.GenericViewSet):
                 username = self.pop_username(email)
                 user = authenticate(request, username=username, email=email, password=password)
             if not user:
-                return Response({"error": "Incorrect password. Re-check your account."})
+                return Response({"error": "Incorrect password. Re-check your password."}, status=status.HTTP_403_FORBIDDEN)
 
         if user:
             type_check = UserProfile.objects.get(user=user)
@@ -171,6 +171,8 @@ class UserViewSet(viewsets.GenericViewSet):
     def update(self, request, pk=None):
 
         user = request.user
+        if user.username=="" or user.username is None: # check if token is given###
+            return Response({"error": "Invalid user token/authentication"}, status=status.HTTP_403_FORBIDDEN) ###
         data = request.data
         serializer = self.get_serializer(user, data=data, partial=True)
         serializer.is_valid(raise_exception=True)

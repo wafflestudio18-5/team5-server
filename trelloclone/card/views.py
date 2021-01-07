@@ -144,11 +144,20 @@ class CardViewSet(viewsets.GenericViewSet):
 
 
     def get(self,request):
+        card_id = request.GET.get('id')
         card_key = request.GET.get('key')
-        try:
-            cardobj=Card.objects.get(key=card_key)
-        except Card.DoesNotExist:
-            return Response({"error": "card not found"},status=status.HTTP_404_NOT_FOUND)
+        if card_key:
+            try:    
+                cardobj=Card.objects.get(key=card_key)
+            except Card.DoesNotExist:
+                return Response({"error": "Card not found"},status=status.HTTP_404_NOT_FOUND)
+        elif card_id:
+            try:
+                cardobj=Card.objects.get(id=card_id)
+            except Card.DoesNotExist:
+                return Response({"error": "Card not found"},status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response({"error": "missing request data."},status=status.HTTP_400_BAD_REQUEST)
 
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
