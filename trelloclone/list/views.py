@@ -59,7 +59,7 @@ class ListViewSet(viewsets.GenericViewSet):
             if not boardto:
                 return Response({'error':'Board not found'},status=status.HTTP_404_NOT_FOUND)
             if not prev_id:
-                if listtochange.prev is not None or listtochange.board is not boardto:
+                if (listtochange.prev is not None) or (listtochange.board is not boardto):
                     try:
                         endlist=List.objects.get(board=boardto,prev=None)
                     except List.DoesNotExist:
