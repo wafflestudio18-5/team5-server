@@ -18,7 +18,7 @@ class BoardViewSet(viewsets.GenericViewSet):
     def create(self, request):
         user = request.user
         if not user.is_authenticated:
-            return Response({'error': 'not logged in'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         name = request.data.get('name')
         if not name:
             return Response({'error': 'missing request data'}, status=status.HTTP_400_BAD_REQUEST)
@@ -34,6 +34,8 @@ class BoardViewSet(viewsets.GenericViewSet):
     @action(detail=False, methods=['GET'])
     def boardlist(self, request):
         user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         boardlist = UserBoard.objects.filter(user=user).all()
         page = self.paginate_queryset(boardlist)
         serializer = UserBoardSerializer(page, many=True)
