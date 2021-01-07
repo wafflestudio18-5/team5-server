@@ -40,14 +40,33 @@ class BoardViewSet(viewsets.GenericViewSet):
 
     def get(self, request):
         board_key = request.GET.get('key')
-        if not board_key: return Response({'error': 'missing params data'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            board = Board.objects.get(key=board_key)
-        except Board.DoesNotExist:
-            return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
+        board_id = request.GET.get('id')
 
-        if not board:
-            Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        if board_key: 
+            try:
+                board = Board.objects.get(key=board_key)
+            except Board.DoesNotExist:
+                return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        elif board_id:
+            try:
+                board = Board.objects.get(id=board_id)
+            except Board.DoesNotExist:
+                return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        else:
+            return Response({'error': 'missing params data'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+        #if not (board_key or board_id): return Response({'error': 'missing params data'}, status=status.HTTP_400_BAD_REQUEST)
+        #try:
+        #    board = Board.objects.get(key=board_key)
+        #except Board.DoesNotExist:
+        #    return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        #if not board:
+        #    Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(self.get_serializer(board).data, status=status.HTTP_200_OK)
 
