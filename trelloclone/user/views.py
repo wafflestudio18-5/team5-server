@@ -65,7 +65,7 @@ class UserViewSet(viewsets.GenericViewSet):
             authProvider = data.get('authProvider')
             if authProvider == "Google": data = self.google(data)
             else: data = self.facebook(data)
-            if bool(data) == False: return Response({"error": "Invalid token"}, status=status.HTTP_403_FORBIDDEN)
+            if bool(data) == False: return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
             if authProvider == "Google": data = self.gg_trans(data)
             else: data = self.fb_trans(data)
 
@@ -75,11 +75,11 @@ class UserViewSet(viewsets.GenericViewSet):
         login(request, user)
         data = serializer.validated_data
         data['token'] = user.auth_token.key
-
         type = request.data.get('grantType')
         UserProfile.objects.create(user=user, grantType=type)
-
-        return Response(data, status=status.HTTP_201_CREATED)
+        noPw = data.copy() ## revised - remove pw for security issue.
+        noPw.pop('password')
+        return Response(noPw, status=status.HTTP_201_CREATED)
 
     def pop_username(self, email):
         try:
@@ -97,11 +97,11 @@ class UserViewSet(viewsets.GenericViewSet):
             authProvider = data.get('authProvider')
             if authProvider == "Google": data = self.google(data)
             else: data = self.facebook(data)
-            if bool(data) == False: return Response({"error": "Invalid token"}, status=status.HTTP_403_FORBIDDEN)
+            if bool(data) == False: return Response({"error": "Invalid token"}, status=status.HTTP_401_UNAUTHORIZED)
             else:
                 email = data.get('email')
                 if self.pop_username(email)==False:
-                    return Response({"error": "No matching user found. Did you sign up?"}, status=status.HTTP_403_FORBIDDEN)
+                    return Response({"error": "No matching user found. Did you sign up?"}, status=status.HTTP_401_UNAUTHORIZED)
                 else :
                     username = self.pop_username(email)
                     user = authenticate(request, username=username, email=email, password="social")
@@ -111,24 +111,24 @@ class UserViewSet(viewsets.GenericViewSet):
             password = data.get('password')
 
             if self.pop_username(email)==False:
-                return Response({"error": "No matching user found. Did you sign up?"}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"error": "No matching user found. Did you sign up?"}, status=status.HTTP_401_UNAUTHORIZED)
             else :
                 username = self.pop_username(email)
                 user = authenticate(request, username=username, email=email, password=password)
             if not user:
-                return Response({"error": "Incorrect password. Re-check your password."}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"error": "Incorrect password. Re-check your password."}, status=status.HTTP_401_UNAUTHORIZED)
 
         if user:
             type_check = UserProfile.objects.get(user=user)
             if type_check.grantType != request.data.get('grantType'):
-                return Response({"error": "No matching user found. Re-check your account type."}, status=status.HTTP_403_FORBIDDEN)
+                return Response({"error": "No matching user found. Re-check your account type."}, status=status.HTTP_401_UNAUTHORIZED)
             login(request, user)
             data = self.get_serializer(user).data
             token, created = Token.objects.get_or_create(user=user)
             data['token'] = token.key
             return Response(data)
 
-        return Response({"error": "No matching user found. Re-check your email and account type."}, status=status.HTTP_403_FORBIDDEN)
+        return Response({"error": "No matching user found. Re-check your email and account type."}, status=status.HTTP_401_UNAUTHORIZED)
 
     @action(detail=False, methods=['PUT'])
     def logout(self, request):
@@ -171,6 +171,8 @@ class UserViewSet(viewsets.GenericViewSet):
     def update(self, request, pk=None):
 
         user = request.user
+        if user.username=="" or user.username is None: # check if token is given###
+            return Response({"error": "Invalid user token/authentication"}, status=status.HTTP_401_UNAUTHORIZED)
         data = request.data
         serializer = self.get_serializer(user, data=data, partial=True)
         serializer.is_valid(raise_exception=True)

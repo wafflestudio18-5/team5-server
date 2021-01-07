@@ -59,7 +59,7 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 3,
 
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -105,27 +105,27 @@ WSGI_APPLICATION = 'trelloclone.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'toyproject-trelloclone.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
-        'PORT': 3306,
-        'NAME': 'waffle_toyproject',
-        'USER': 'waffle-toyproject',
-        'PASSWORD': 'password',
-    }
-}
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'HOST': '127.0.0.1',
+#         'HOST': 'toyproject-trelloclone.cwybyntak1ph.ap-northeast-2.rds.amazonaws.com',
 #         'PORT': 3306,
-#         'NAME': 'toy_project',
-#         'USER': 'toy_project',
+#         'NAME': 'waffle_toyproject',
+#         'USER': 'waffle-toyproject',
 #         'PASSWORD': 'password',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST': '127.0.0.1',
+        'PORT': 3306,
+        'NAME': 'toy_project',
+        'USER': 'toy_project',
+        'PASSWORD': 'password',
+    }
+}
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
@@ -142,8 +142,6 @@ CORS_ORIGIN_WHITELIST = [
     'http://d8ntc1x3tplcn.cloudfront.net',
     'http://www.toyproject-trelloclone.shop',
 ]
-#INSTALLED_APPS.append('corsheaders')
-#MIDDLEWARE.append('corsheaders.middleware.CorsMiddleware')
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

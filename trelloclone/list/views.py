@@ -5,12 +5,14 @@ from rest_framework.response import Response
 from board.models import Board, UserBoard
 from list.models import List
 from list.serializers import ListSerializer
-from django.core.paginator import Paginator
 from rest_framework.decorators import action
 from card.models import Card
+from itertools import chain
+
 class ListViewSet(viewsets.GenericViewSet):
     queryset = List.objects.all()
     serializer_class=ListSerializer
+
     def create(self,request):
         user=request.user
         board_id=request.data.get('board_id')
@@ -124,6 +126,3 @@ class ListViewSet(viewsets.GenericViewSet):
             Response({'error':'List does not exist'},status=status.HTTP_400_BAD_REQUEST)
         
         return Response(self.get_serializer(listobj).data,status=status.HTTP_200_OK)
-
-
-# Create your views here.

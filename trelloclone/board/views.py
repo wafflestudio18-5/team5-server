@@ -41,10 +41,11 @@ class BoardViewSet(viewsets.GenericViewSet):
         #return Response(UserBoardSerializer(boardlist, many=True).data, status=status.HTTP_200_OK)
 
     def get(self, request):
+
         board_key = request.GET.get('key')
         board_id = request.GET.get('id')
 
-        if board_key: 
+        if board_key:
             try:
                 board = Board.objects.get(key=board_key)
             except Board.DoesNotExist:
@@ -58,17 +59,6 @@ class BoardViewSet(viewsets.GenericViewSet):
 
         else:
             return Response({'error': 'missing params data'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-        #if not (board_key or board_id): return Response({'error': 'missing params data'}, status=status.HTTP_400_BAD_REQUEST)
-        #try:
-        #    board = Board.objects.get(key=board_key)
-        #except Board.DoesNotExist:
-        #    return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
-
-        #if not board:
-        #    Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(self.get_serializer(board).data, status=status.HTTP_200_OK)
 
