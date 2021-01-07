@@ -60,7 +60,6 @@ class UserViewSet(viewsets.GenericViewSet):
 
     def create(self, request):
         data = request.data
-
         if data.get('grantType') == "OAUTH":
             authProvider = data.get('authProvider')
             if authProvider == "Google": data = self.google(data)
@@ -71,6 +70,15 @@ class UserViewSet(viewsets.GenericViewSet):
 
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
+
+        if data.get('grantType') == "PASSWORD":
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+            if bool(first_name) ^ bool(last_name):
+                return Response({"error": "First name and last name should appear together"}, status=status.HTTP_400_BAD_REQUEST)
+            if first_name and last_name and not (first_name.isalpha() and last_name.isalpha()):
+                return Response({"error": "First name and last name should not include number or special character"},
+                                status=status.HTTP_400_BAD_REQUEST)
         user = serializer.save()
         login(request, user)
         data = serializer.validated_data
