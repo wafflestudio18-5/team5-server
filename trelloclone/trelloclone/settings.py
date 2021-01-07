@@ -25,10 +25,11 @@ SECRET_KEY = 'gr4e-9g!y1fl4t1yp2-)pjv--7f!!mti-7y+s#@s@zoeiu63an'
 DEBUG = False
 DEBUG_TOOLBAR = os.getenv('DEBUG_TOOLBAR') in ('true', 'True')
 
-DATETIME_FORMAT = '%d-%m-%Y %H:%M:%S'
-USE_L10N = True
-USE_TZ = True
+LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Seoul'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = False
 
 ALLOWED_HOSTS = [
     '15.164.222.199',
@@ -160,18 +161,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# Internationalization
-# https://docs.djangoproject.com/en/2.2/topics/i18n/
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
