@@ -60,6 +60,8 @@ class UserViewSet(viewsets.GenericViewSet):
 
     def create(self, request):
         data = request.data
+        if (data.get('grantType')!="OAUTH") and (data.get('grantType')!="PASSWORD"):
+            return Response({"error": "put grantType"}, status=status.HTTP_400_BAD_REQUEST)
         if data.get('grantType') == "OAUTH":
             authProvider = data.get('authProvider')
             if authProvider == "Google": data = self.google(data)
