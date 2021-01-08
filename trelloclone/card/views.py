@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from list.models import List
 from board.models import Board,UserBoard
 from activity.models import Activity
+from django.utils import dateformat, timezone
 
 
 class CardViewSet(viewsets.GenericViewSet):
@@ -32,8 +33,8 @@ class CardViewSet(viewsets.GenericViewSet):
         ub=UserBoard.objects.get(user=user,board=boardobj)
         if not ub:
             return Response({"error": "Not authorized to create in this board"},status=status.HTTP_403_FORBIDDEN)
-
-        createdcard=Card.objects.create(name=name,list=listobj,creator=user,board=listobj.board)
+        card_date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
+        createdcard=Card.objects.create(name=name,list=listobj,creator=user,board=listobj.board, created_at=card_date)
         createdcard.key=str(createdcard.id).zfill(8)
         headcard=listobj.head
         befprev=headcard.prev
@@ -41,7 +42,9 @@ class CardViewSet(viewsets.GenericViewSet):
         createdcard.prev=befprev
         headcard.save()
         contentdt=" added this card to "+listobj.name
-        cact=Activity.objects.create(creator=user,card=createdcard,content=contentdt)
+
+        activity_date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
+        cact=Activity.objects.create(creator=user,card=createdcard,content=contentdt, created_at =activity_date)
         createdcard.save()
         
         return Response(self.get_serializer(createdcard).data, status=status.HTTP_201_CREATED)
