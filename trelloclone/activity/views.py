@@ -45,7 +45,6 @@ class ActivityViewSet(viewsets.GenericViewSet):
         actobj.save()
         return Response(ActivitySerializer(actobj).data,status=status.HTTP_200_OK)
 
-
     def delete(self, request):
         id = request.data.get('id')
         try: activity = self.queryset.get(id=id)
