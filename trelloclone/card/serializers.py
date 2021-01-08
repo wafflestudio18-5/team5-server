@@ -15,6 +15,7 @@ class CardSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
+            'created_at',
             'description',
             'due_date',
             'members',
