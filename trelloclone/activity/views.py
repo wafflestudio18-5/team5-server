@@ -5,8 +5,7 @@ from activity.models import Activity
 from activity.serializers import ActivitySerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
-#from django.utils import dateformat, timezone
-
+from django.utils import dateformat, timezone
 
 class ActivityViewSet(viewsets.GenericViewSet):
     queryset = Activity.objects.all()
@@ -19,12 +18,11 @@ class ActivityViewSet(viewsets.GenericViewSet):
         if not card_id or not content:
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
         try:
-            #activity_date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
-            cardobj=Card.objects.get(id = card_id)
+            cardobj=Card.objects.get(id=card_id)
         except Card.DoesNotExist:
             return Response({'error':'card not found'},status=status.HTTP_404_NOT_FOUND)
-        
-        newact=Activity.objects.create(creator=user,content=content,card=cardobj,is_comment=True)
+        activity_date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
+        newact=Activity.objects.create(creator=user,content=content,card=cardobj,is_comment=True, created_at=activity_date)
         return Response(ActivitySerializer(newact).data, status=status.HTTP_201_CREATED)
 
     ##############################################################
