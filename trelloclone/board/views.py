@@ -174,6 +174,6 @@ class BoardViewSet(viewsets.GenericViewSet):
             ub.star=False
             ub.save()
         board.save()
-        return Response(BoardSerializer(board).data, status=status.HTTP_200_OK)
+        return Response(self.get_serializer(board).data, status=status.HTTP_200_OK)
 
 # Create your views here.
