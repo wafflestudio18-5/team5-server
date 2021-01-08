@@ -161,7 +161,6 @@ class CardViewSet(viewsets.GenericViewSet):
                 return Response({"error": "Card not found"},status=status.HTTP_404_NOT_FOUND)
         else:
             return Response({"error": "missing request data."},status=status.HTTP_400_BAD_REQUEST)
-
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
     def delete(self, request):
