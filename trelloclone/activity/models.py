@@ -5,8 +5,8 @@ from django.utils import dateformat, timezone
 
 class Activity(models.Model):
     creator = models.ForeignKey(User, related_name='activity_creator', on_delete=models.CASCADE)
-    content = models.CharField(max_length=200, db_index=True, null=True)
-    date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
-    created_at = models.DateTimeField(default=date, blank=True)
+    content = models.CharField(max_length=500, db_index=True, null=True)
+    #date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
+    created_at = models.CharField(max_length=30, blank=True)
     card = models.ForeignKey('card.Card', related_name='activity_card', on_delete=models.CASCADE)
     is_comment = models.BooleanField(default=False)

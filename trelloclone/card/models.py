@@ -6,8 +6,7 @@ class Card(models.Model):
     name = models.CharField(max_length=30, db_index=True, null=False)
     description = models.TextField(db_index=True, null=True)
     due_date = models.DateTimeField(auto_now=False, blank=True,null=True)
-    date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
-    created_at = models.DateTimeField(default=date, blank=True)
+    created_at = models.CharField(max_length=30, blank=True)
     is_head = models.BooleanField(default=False)
     key = models.CharField(max_length=10, null=True)
 
