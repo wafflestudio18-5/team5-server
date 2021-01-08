@@ -24,6 +24,7 @@ SECRET_KEY = 'gr4e-9g!y1fl4t1yp2-)pjv--7f!!mti-7y+s#@s@zoeiu63an'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 DEBUG_TOOLBAR = os.getenv('DEBUG_TOOLBAR') in ('true', 'True')
+DEBUG_TOOLBAR_CONFIG = { "SHOW_TOOLBAR_CALLBACK" : lambda request: True, } ##
 
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Seoul'
@@ -42,6 +43,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     'corsheaders',
+    'debug_toolbar', #
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -69,6 +71,7 @@ REST_FRAMEWORK = {
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware', #
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -77,10 +80,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-if DEBUG_TOOLBAR:
-    INSTALLED_APPS.append('debug_toolbar')
-    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
-    INTERNAL_IPS = ('127.0.0.1',)
+#if DEBUG_TOOLBAR:
+#    INSTALLED_APPS.append('debug_toolbar')
+#    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+#    INTERNAL_IPS = ('127.0.0.1','15.164.222.199','ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com')
+
+INTERNAL_IPS = ('127.0.0.1','15.164.222.199','ec2-15-164-222-199.ap-northeast-2.compute.amazonaws.com')
 
 ROOT_URLCONF = 'trelloclone.urls'
 
