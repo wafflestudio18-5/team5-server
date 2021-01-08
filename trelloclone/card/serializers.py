@@ -30,7 +30,7 @@ class CardSerializer(serializers.ModelSerializer):
         return UserSerializer(members, many=True, context=self.context).data
 
     def get_activities(self, card):
-        activities = Activity.objects.all().filter(card_id=card.id).order_by('created_at')
+        activities = Activity.objects.all().filter(card_id=card.id).order_by('id')
         return ActivitySerializer(activities, many=True, context=self.context).data
     
 

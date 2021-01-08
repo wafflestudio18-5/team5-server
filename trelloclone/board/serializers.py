@@ -15,6 +15,7 @@ class BoardSerializer(serializers.ModelSerializer):
             'name',
             'star',
             'lists',
+            'key',
         )
     def get_star(self,boardobj):
         user=self.context['request'].user
