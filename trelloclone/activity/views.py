@@ -47,7 +47,7 @@ class ActivityViewSet(viewsets.GenericViewSet):
 
 
     def delete(self, request):
-        id = request.get('id')
+        id = request.data.get('id')
         try: activity = self.queryset.get(id=id)
         except: return Response({"error": "invalid activity id"}, status=status.HTTP_400_BAD_REQUEST)
         activity.delete()
