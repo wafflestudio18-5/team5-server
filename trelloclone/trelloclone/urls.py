@@ -29,7 +29,9 @@ urlpatterns = [
     path('api/v1/', include('activity.urls')),
     path('api/v1/', include('user.urls')),
 ]
-if settings.DEBUG_TOOLBAR:
+#if settings.DEBUG_TOOLBAR:
+#    import debug_toolbar
+if settings.DEBUG:
     import debug_toolbar
 
     urlpatterns += [
