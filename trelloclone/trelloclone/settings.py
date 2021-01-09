@@ -80,6 +80,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 #if DEBUG_TOOLBAR:
 #    INSTALLED_APPS.append('debug_toolbar')
 #    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')

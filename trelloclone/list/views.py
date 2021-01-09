@@ -14,15 +14,24 @@ class ListViewSet(viewsets.GenericViewSet):
     serializer_class=ListSerializer
 
     def create(self,request):
-        user=request.user
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         board_id=request.data.get('board_id')
         name=request.data.get('name')
         if not board_id or not name:
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
         board=Board.objects.get(id=board_id)
         headlist=board.head
-        userboard=UserBoard.objects.filter(user=user,board=board)
-        if userboard:
+
+        auth = False
+        try:
+            userboard=UserBoard.objects.filter(user=user,board=board)
+            if userboard : auth = True
+        except :
+            pass
+
+        if auth==True:
             headcard = Card.objects.create(is_head=True,board=board)
             createdlist=List.objects.create(name=name,head=headcard,board=board)
             
@@ -35,10 +44,12 @@ class ListViewSet(viewsets.GenericViewSet):
             headcard.save()
             return Response(self.get_serializer(createdlist).data,status=status.HTTP_201_CREATED)
         else:
-            return Response({'error':'unathorized'},status=status.HTTP_403_FORBIDDEN)
+            return Response({'error':'You have no permission to that board.'},status=status.HTTP_403_FORBIDDEN)
 
     def put(self,request):
-        user=request.user  # board 에속한 user인지 어떻게 확인하지..?
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         list_id=request.data.get('list_id')
         board_id=request.data.get('board_id')
         name=request.data.get('name')
@@ -48,7 +59,7 @@ class ListViewSet(viewsets.GenericViewSet):
         try:
             listtochange=List.objects.get(id=list_id)
         except List.DoesNotExist:
-            return Response({'error':'list not found'},status=status.HTTP_404_NOT_FOUND)
+            return Response({'error':'list not found'},status=status.HTTP_400_BAD_REQUEST)
         if listtochange.is_head:
             return Response({'error':'cannot change head list'},status=status.HTTP_400_BAD_REQUEST)
             
@@ -99,15 +110,17 @@ class ListViewSet(viewsets.GenericViewSet):
     
     def delete(self, request):
         user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         list_id = request.data.get('id')
         if not list_id:
              return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)
         try:
             todelete = List.objects.get(id=list_id)
         except List.DoesNotExist:
-            return Response({'error':'list not found'},status=status.HTTP_404_NOT_FOUND)
+            return Response({'error':'list not found'},status=status.HTTP_400_BAD_REQUEST)
         if todelete.is_head:
-            return Response({'error':'cannot delete head list'},status=status.HTTP_403_FORBIDDEN)
+            return Response({'error':'cannot delete head list'},status=status.HTTP_400_BAD_REQUEST)
         prevlist=todelete.prev
         nextlist=todelete.next
         nextlist.prev=prevlist
@@ -118,6 +131,9 @@ class ListViewSet(viewsets.GenericViewSet):
         return Response(status=status.HTTP_200_OK)
 
     def get(self,request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         list_id = request.data.get('id')
         if not list_id:
             return Response({'error':'missing request data'},status=status.HTTP_400_BAD_REQUEST)

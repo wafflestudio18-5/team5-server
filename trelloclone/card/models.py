@@ -9,7 +9,6 @@ class Card(models.Model):
     created_at = models.CharField(max_length=30, blank=True)
     is_head = models.BooleanField(default=False)
     key = models.CharField(max_length=10, null=True)
-
     creator = models.ForeignKey(User, related_name='card_creator', on_delete=models.DO_NOTHING,null=True)
     list = models.ForeignKey('list.List', related_name='card_list', on_delete=models.CASCADE,null=True)
     board = models.ForeignKey('board.Board', related_name='card_board', on_delete=models.CASCADE,null=True)
