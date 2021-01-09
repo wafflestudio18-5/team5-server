@@ -173,8 +173,6 @@ class UserViewSet(viewsets.GenericViewSet):
 
     #@action(detail=False, methods=['GET'])
     def list(self, request):
-        if self.get_queryset().count()==0:
-            return Response({"error": "No user found."}, status=status.HTTP_400_BAD_REQUEST)
         users = self.get_queryset()
         return Response(self.get_serializer(users, many=True).data)
 
