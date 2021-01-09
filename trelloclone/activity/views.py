@@ -12,7 +12,9 @@ class ActivityViewSet(viewsets.GenericViewSet):
     serializer_class = ActivitySerializer
 
     def create(self, request):
-        user=request.user
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         card_id=request.data.get('card_id')
         content=request.data.get('content')
         if not card_id or not content:
@@ -20,7 +22,7 @@ class ActivityViewSet(viewsets.GenericViewSet):
         try:
             cardobj=Card.objects.get(id=card_id)
         except Card.DoesNotExist:
-            return Response({'error':'card not found'},status=status.HTTP_404_NOT_FOUND)
+            return Response({'error':'card not found'},status=status.HTTP_400_BAD_REQUEST)
         activity_date = dateformat.format(timezone.now(), 'Y-m-d H:i:s')
         newact=Activity.objects.create(creator=user,content=content,card=cardobj,is_comment=True, created_at=activity_date)
         return Response(ActivitySerializer(newact).data, status=status.HTTP_201_CREATED)
@@ -28,7 +30,9 @@ class ActivityViewSet(viewsets.GenericViewSet):
     ##############################################################
 
     def put(self, request):
-        user=request.user
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         activity_id=request.data.get('id')
         content=request.data.get('content')
         if not content or not activity_id:
@@ -36,9 +40,9 @@ class ActivityViewSet(viewsets.GenericViewSet):
         try:
             actobj=Activity.objects.get(id=activity_id)
         except Activity.DoesNotExist:
-            return Response({'error':'activity not found'},status=status.HTTP_404_NOT_FOUND)
+            return Response({'error':'activity not found'},status=status.HTTP_400_BAD_REQUEST)
         if not actobj.is_comment:
-            return Response({'error':'this activity is not a comment'},status=status.HTTP_403_FORBIDDEN)
+            return Response({'error':'this activity is not a comment'},status=status.HTTP_400_BAD_REQUEST)
         if actobj.creator != user:
             return Response({'error':'This is not your comment'},status=status.HTTP_403_FORBIDDEN)
         actobj.content=content
@@ -46,9 +50,16 @@ class ActivityViewSet(viewsets.GenericViewSet):
         return Response(ActivitySerializer(actobj).data,status=status.HTTP_200_OK)
 
     def delete(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         id = request.data.get('id')
-        try: activity = self.queryset.get(id=id)
-        except: return Response({"error": "invalid activity id"}, status=status.HTTP_400_BAD_REQUEST)
+        try: activity = Activity.objects.get(id=id)
+        except Activity.DoesNotExist: return Response({"error": "invalid activity id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if activity.creator != user:
+            return Response({'error': 'This is not your comment'}, status=status.HTTP_403_FORBIDDEN)
+
         activity.delete()
         return Response(status=status.HTTP_200_OK)
 

@@ -54,13 +54,13 @@ class BoardViewSet(viewsets.GenericViewSet):
             try:
                 board = Board.objects.get(key=board_key)
             except Board.DoesNotExist:
-                return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"error": "board not found"}, status=status.HTTP_400_BAD_REQUEST)
 
         elif board_id:
             try:
                 board = Board.objects.get(id=board_id)
             except Board.DoesNotExist:
-                return Response({"error": "board not found"}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"error": "board not found"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({'error': 'missing params data'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -156,7 +156,7 @@ class BoardViewSet(viewsets.GenericViewSet):
         try:
             board = Board.objects.get(id=board_id)
         except Board.DoesNotExist:
-            Response({'error': 'Board does not exist'}, status=status.HTTP_404_NOT_FOUND)
+            Response({'error': 'Board does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             ub = UserBoard.objects.get(board=board, user=user)
