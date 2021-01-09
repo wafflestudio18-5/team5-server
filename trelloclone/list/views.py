@@ -62,19 +62,25 @@ class ListViewSet(viewsets.GenericViewSet):
             return Response({'error':'list not found'},status=status.HTTP_400_BAD_REQUEST)
         if listtochange.is_head:
             return Response({'error':'cannot change head list'},status=status.HTTP_400_BAD_REQUEST)
-            
+
+        bdcheck = listtochange.board
+        try:
+            ub = UserBoard.objects.get(user=user, board=bdcheck)
+        except UserBoard.DoesNotExist:
+            return Response({'error': 'You have no permission to access that board'}, status=status.HTTP_403_FORBIDDEN)
+
         if board_id:
             if(listtochange.board.id != int(board_id)):
                 return Response({'error':'list does not belong to that board'},status=status.HTTP_400_BAD_REQUEST)
             boardto=Board.objects.get(id=board_id)
             if not boardto:
-                return Response({'error':'Board not found'},status=status.HTTP_404_NOT_FOUND)
+                return Response({'error':'Board not found'},status=status.HTTP_400_BAD_REQUEST)
             if not prev_id:
                 if (listtochange.prev is not None) or (listtochange.board is not boardto):
                     try:
                         endlist=List.objects.get(board=boardto,prev=None)
                     except List.DoesNotExist:
-                        return Response({'error':'db data error: endlist not found'},status=status.HTTP_404_NOT_FOUND)
+                        return Response({'error':'db data error: endlist not found'},status=status.HTTP_400_BAD_REQUEST)
                     fprev=listtochange.prev
                     fnext=listtochange.next
                     fnext.prev=fprev
@@ -89,7 +95,7 @@ class ListViewSet(viewsets.GenericViewSet):
                     try:
                         tprev=List.objects.get(id=prev_id,board=boardto)
                     except List.DoesNotExist:
-                        return Response({'error':'prev list not found'},status=status.HTTP_404_NOT_FOUND)
+                        return Response({'error':'prev list not found'},status=status.HTTP_400_BAD_REQUEST)
                     fprev=listtochange.prev
                     fnext=listtochange.next
                     tprevnext=tprev.next
@@ -121,6 +127,13 @@ class ListViewSet(viewsets.GenericViewSet):
             return Response({'error':'list not found'},status=status.HTTP_400_BAD_REQUEST)
         if todelete.is_head:
             return Response({'error':'cannot delete head list'},status=status.HTTP_400_BAD_REQUEST)
+
+        board = todelete.board
+        try:
+            ub = UserBoard.objects.get(user=user, board=board)
+        except UserBoard.DoesNotExist:
+            return Response({'error': 'You have no permission to access that board'}, status=status.HTTP_403_FORBIDDEN)
+
         prevlist=todelete.prev
         nextlist=todelete.next
         nextlist.prev=prevlist

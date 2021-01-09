@@ -21,6 +21,8 @@ class CardViewSet(viewsets.GenericViewSet):
 
     def create(self, request):
         user=request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         data = request.data
         name=request.data.get('name')
         list_id=request.data.get('list_id')
@@ -53,6 +55,8 @@ class CardViewSet(viewsets.GenericViewSet):
 
     def put(self, request):
         user=request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         card_id=request.data.get('id')
         member=request.data.get('member')
         name=request.data.get('name')
@@ -75,7 +79,7 @@ class CardViewSet(viewsets.GenericViewSet):
             try:
                 toinvite=User.objects.get(username=member)
             except User.DoesNotExist:
-                return Response({"error": "User not found"},status=status.HTTP_404_NOT_FOUND)
+                return Response({"error": "User not found"},status=status.HTTP_400_BAD_REQUEST)
 
             dup_error=False
             try:
@@ -103,14 +107,14 @@ class CardViewSet(viewsets.GenericViewSet):
             try:
                 listobj=List.objects.get(id=list_id)
             except List.DoesNotExist:
-                return Response({"error": "list not found"},status=status.HTTP_404_NOT_FOUND)
+                return Response({"error": "list not found"},status=status.HTTP_400_BAD_REQUEST)
 
             if not prev_id:
                 if (cardobj.prev is not None) or (beflist is not list_id):
                     try:
                         endcard=Card.objects.get(list=listobj,prev=None)
                     except Card.DoesNotExist:
-                        return Response({"error": "db error: first card not found"},status=status.HTTP_404_NOT_FOUND) # 이론상 발생할 수 없음
+                        return Response({"error": "db error: first card not found"},status=status.HTTP_400_BAD_REQUEST) # 이론상 발생할 수 없음
                     fprev=cardobj.prev
                     fnext=cardobj.next
                     fnext.prev=fprev
@@ -125,7 +129,7 @@ class CardViewSet(viewsets.GenericViewSet):
                     try:
                         tprev=Card.objects.get(id=prev_id,list=listobj)
                     except Card.DoesNotExist:
-                        return Response({'error':'prev list not found'},status=status.HTTP_404_NOT_FOUND)
+                        return Response({'error':'prev list not found'},status=status.HTTP_400_BAD_REQUEST)
                     fprev=cardobj.prev
                     fnext=cardobj.next
                     tprevnext=tprev.next
@@ -147,30 +151,36 @@ class CardViewSet(viewsets.GenericViewSet):
 
 
     def get(self,request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         card_id = request.GET.get('id')
         card_key = request.GET.get('key')
         if card_key:
             try:    
                 cardobj=Card.objects.get(key=card_key)
             except Card.DoesNotExist:
-                return Response({"error": "Card not found"},status=status.HTTP_404_NOT_FOUND)
+                return Response({"error": "Card not found"},status=status.HTTP_400_BAD_REQUEST)
         elif card_id:
             try:
                 cardobj=Card.objects.get(id=card_id)
             except Card.DoesNotExist:
-                return Response({"error": "Card not found"},status=status.HTTP_404_NOT_FOUND)
+                return Response({"error": "Card not found"},status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({"error": "missing request data."},status=status.HTTP_400_BAD_REQUEST)
         return Response(CardSerializer(cardobj).data,status=status.HTTP_200_OK)
 
     def delete(self, request):
+        user=request.user
+        if not user.is_authenticated:
+            return Response({'error': 'not logged in'}, status=status.HTTP_401_UNAUTHORIZED)
         card_id = request.data.get('id')
         if not card_id:
             return Response({"error": "missing request data."},status=status.HTTP_400_BAD_REQUEST)
         try:
             cardobj=Card.objects.get(id=card_id)
         except Card.DoesNotExist:
-            return Response({"error": "card not found"},status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "card not found"},status=status.HTTP_400_BAD_REQUEST)
         if cardobj.is_head:
             return Response({"error": "cannot delete head card"},status=status.HTTP_403_FORBIDDEN)
 

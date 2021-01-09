@@ -5,6 +5,7 @@ from board.models import Board,UserBoard
 from list.serializers import ListSerializer
 from card.serializers import BasicCardSerializer
 from itertools import chain
+
 class BoardSerializer(serializers.ModelSerializer):
     star=serializers.SerializerMethodField()
     lists=serializers.SerializerMethodField()
