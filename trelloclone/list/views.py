@@ -70,20 +70,21 @@ class ListViewSet(viewsets.GenericViewSet):
             if not boardto:
                 return Response({'error':'Board not found'},status=status.HTTP_404_NOT_FOUND)
             if not prev_id:
-                if (listtochange.prev is not None) or (listtochange.board is not boardto):
+                if (listtochange.prev is not None) or (listtochange.board.id is not board_id):
                     try:
                         endlist=List.objects.get(board=boardto,prev=None)
                     except List.DoesNotExist:
                         return Response({'error':'db data error: endlist not found'},status=status.HTTP_404_NOT_FOUND)
-                    fprev=listtochange.prev
-                    fnext=listtochange.next
-                    fnext.prev=fprev
-                    listtochange.prev=None
-                    listtochange.save()
-                    fnext.save()
+                    if endlist.id is not listtochange.id:
+                        fprev=listtochange.prev
+                        fnext=listtochange.next
+                        fnext.prev=fprev
+                        listtochange.prev=None
+                        listtochange.save()
+                        fnext.save()
 
-                    endlist.prev=listtochange
-                    endlist.save()
+                        endlist.prev=listtochange
+                        endlist.save()
             else:
                 if listtochange.prev is None or prev_id is not listtochange.prev.id:
                     try:
