@@ -3,8 +3,6 @@
 Team5 - 김유진(Front), 우현민(Front), 정대용(Back), 정민수(Back), 김기완(PM)
 team5는 trello를 clone합니다.
 
-- 백엔드 전용 도메인: www.toyproject-trelloclone.shop  
-- 완성된 사이트: [d8ntc1x3tplcn.cloudfront.net](d8ntc1x3tplcn.cloudfront.net)  
 - api documentation: [LINK](https://docs.google.com/document/d/1-1lXespTjti7DgOsNiLmjI6QkhyT5TzljXeTluanZKk/edit?usp=sharing)
 
 endpoint : 
